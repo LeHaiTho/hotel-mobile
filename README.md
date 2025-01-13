@@ -2,7 +2,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
 
@@ -77,3 +77,46 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+CẤU TRÚC TỔ CHỨC
+my-react-native-app/
+├── android/ # Thư mục chứa mã nguồn Android
+├── ios/ # Thư mục chứa mã nguồn iOS
+├── src/ # Thư mục chứa mã nguồn chính của ứng dụng
+│ ├── assets/ # Chứa các tài nguyên tĩnh (hình ảnh, font, JSON, v.v.)
+│ │ ├── images/ # Hình ảnh
+│ │ ├── fonts/ # Font chữ
+│ │ └── data/ # Dữ liệu JSON hoặc file tĩnh khác
+│ ├── components/ # Chứa các component tái sử dụng
+│ │ ├── common/ # Component chung (Button, Input, v.v.)
+│ │ ├── ui/ # Component UI (Modal, Card, v.v.)
+│ │ └── ... # Các component khác
+│ ├── constants/ # Chứa các hằng số (màu sắc, kích thước, API endpoints, v.v.)
+│ ├── navigation/ # Quản lý điều hướng (React Navigation)
+│ │ ├── AppNavigator.js # Cấu hình chính của navigation
+│ │ ├── stacks/ # Các stack navigator
+│ │ ├── tabs/ # Các tab navigator
+│ │ └── ... # Các loại navigator khác
+│ ├── screens/ # Chứa các màn hình (screens) của ứng dụng
+│ │ ├── HomeScreen/ # Màn hình Home
+│ │ ├── ProfileScreen/ # Màn hình Profile
+│ │ └── ... # Các màn hình khác
+│ ├── services/ # Chứa các service (API calls, network, v.v.)
+│ ├── store/ # Quản lý state (Redux, Zustand, v.v.)
+│ │ ├── slices/ # Redux slices (nếu dùng Redux Toolkit)
+│ │ ├── actions/ # Redux actions (nếu dùng Redux)
+│ │ ├── reducers/ # Redux reducers (nếu dùng Redux)
+│ │ └── store.js # Cấu hình store
+│ ├── hooks/ # Chứa các custom hooks
+│ ├── utils/ # Chứa các hàm tiện ích (helpers, formatters, v.v.)
+│ ├── contexts/ # Chứa các React Context (nếu sử dụng)
+│ ├── theme/ # Chứa cấu hình theme (màu sắc, font, spacing, v.v.)
+│ ├── App.js # File entry point của ứng dụng
+│ └── index.js # File khởi chạy ứng dụng
+├── .env # File cấu hình môi trường
+├── .eslintrc.js # Cấu hình ESLint
+├── .prettierrc.js # Cấu hình Prettier
+├── babel.config.js # Cấu hình Babel
+├── metro.config.js # Cấu hình Metro Bundler
+├── package.json # File quản lý dependencies
+└── README.md # Tài liệu dự án
