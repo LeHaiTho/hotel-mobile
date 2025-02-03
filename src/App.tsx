@@ -1,4 +1,5 @@
-import 'react-native-gesture-handler';
+// import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {
@@ -8,16 +9,26 @@ import {
   HomeScreen,
   EmailVerificationScreen,
   OTPVerificationScreen,
+  HotelDetailScreen,
+  HotelImageGalleryScreen,
+  RoomListScreen,
 } from './screens';
+import {HotelCard} from './components';
 
 const App = () => {
   return (
-    // <LoginScreen />
-    // <AccountScreen />
-    // <DashboardScreen />
-    // <HomeScreen />
-    // <EmailVerificationScreen />
-    <OTPVerificationScreen />
+    // {/* // <LoginScreen />
+    // // <AccountScreen />
+    // // <DashboardScreen />
+    // // <HomeScreen />
+    // // <EmailVerificationScreen />
+    // // <OTPVerificationScreen />
+    // // <HotelCard />
+    // // <HotelDetailScreen />
+    // // <HotelImageGalleryScreen /> */}
+    <GestureHandlerRootView style={{flex: 1}}>
+      <RoomListScreen />
+    </GestureHandlerRootView>
   );
 };
 

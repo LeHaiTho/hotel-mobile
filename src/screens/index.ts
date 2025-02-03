@@ -4,6 +4,9 @@ import DashboardScreen from './DashboardScreen';
 import HomeScreen from './HomeScreen';
 import OTPVerificationScreen from './auth/OTPVerificationScreen';
 import EmailVerificationScreen from './auth/EmailVerificationScreen';
+import HotelDetailScreen from './HotelDetailScreen';
+import HotelImageGalleryScreen from './HotelImageGalleryScreen';
+import RoomListScreen from './RoomListScreen';
 export {
   LoginScreen,
   AccountScreen,
@@ -11,4 +14,7 @@ export {
   HomeScreen,
   EmailVerificationScreen,
   OTPVerificationScreen,
+  HotelDetailScreen,
+  HotelImageGalleryScreen,
+  RoomListScreen,
 };

@@ -120,3 +120,66 @@ my-react-native-app/
 ├── metro.config.js # Cấu hình Metro Bundler
 ├── package.json # File quản lý dependencies
 └── README.md # Tài liệu dự án
+my-react-native-app/
+├── **tests**/
+│ └── App.test.js
+├── android/
+├── ios/
+├── src/
+│ ├── assets/
+│ │ ├── images/
+│ │ └── fonts/
+│ ├── components/
+│ │ ├── Button/
+│ │ └── Input/
+│ ├── config/
+│ │ ├── colors.js
+│ │ └── api.js
+│ ├── constants/
+│ │ └── routes.js
+│ ├── context/
+│ │ └── AuthContext.js
+│ ├── hooks/
+│ │ └── useFetch.js
+│ ├── navigation/
+│ │ └── AppNavigator.js
+│ ├── screens/
+│ │ ├── Home/
+│ │ └── Profile/
+│ ├── services/
+│ │ └── apiService.js
+│ ├── store/
+│ │ ├── actions/
+│ │ ├── reducers/
+│ │ └── store.js
+│ ├── styles/
+│ │ └── globalStyles.js
+│ ├── utils/
+│ │ └── dateFormatter.js
+│ └── App.js
+├── .env
+├── .eslintrc.js
+├── .prettierrc.js
+├── babel.config.js
+├── metro.config.js
+├── package.json
+└── README.md
+màu sắc:
+#003b95
+#E5E5E5
+#666666
+#D8E7FA
+#FFB700
+#058633
+
+
+ // "react-native-gesture-handler": "^2.9.0",
+    // "react-native-safe-area-context": "^4.10.1",
+    // "react-native-screens": "^4.4.0",
+    // "@gorhom/bottom-sheet": "^5.0.6",
+    // "@react-native-masked-view/masked-view": "^0.3.2",
+    // "@react-navigation/bottom-tabs": "^7.2.0",
+    // "@react-navigation/elements": "^2.2.5",
+    // "@react-navigation/native": "^7.0.14",
+    // "@react-navigation/native-stack": "^7.2.0",
+    // "@react-navigation/stack": "^7.1.1",
