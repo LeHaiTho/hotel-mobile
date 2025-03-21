@@ -7,7 +7,16 @@ import EmailVerificationScreen from './auth/EmailVerificationScreen';
 import HotelDetailScreen from './HotelDetailScreen';
 import HotelImageGalleryScreen from './HotelImageGalleryScreen';
 import RoomListScreen from './RoomListScreen';
+import BookingInfomationScreen from './BookingInfomationScreen';
+import BookingDetailScreen from './BookingDetailScreen';
+import BookingConfirmationScreen from './BookingConfirmationScreen';
+import ReservationDetailScreen from './ReservationDetailScreen';
+import AdjustBookingDateScreen from './AdjustBookingDateScreen';
+import HotelSearchResultsScreen from './HotelSearchResultsScreen';
+import SearchLocationScreen from './SearchLocationScreen';
+import Map from './Map';
 export {
+  HotelSearchResultsScreen,
   LoginScreen,
   AccountScreen,
   DashboardScreen,
@@ -17,4 +26,11 @@ export {
   HotelDetailScreen,
   HotelImageGalleryScreen,
   RoomListScreen,
+  BookingInfomationScreen,
+  BookingDetailScreen,
+  BookingConfirmationScreen,
+  ReservationDetailScreen,
+  AdjustBookingDateScreen,
+  SearchLocationScreen,
+  Map,
 };

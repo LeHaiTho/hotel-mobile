@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "997402381071",
+    "project_id": "hotel-e1d1c",
+    "storage_bucket": "hotel-e1d1c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997402381071:android:08b62763b45b66c03ccc7a",
+        "android_client_info": {
+          "package_name": "com.mobileHotel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997402381071-mlu3nc88dos9k2bfl75gig7pjhqi4h4q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobileHotel",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "997402381071-psabl334fh76op0a77j8kghro055j6mo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRpqG8TR3BjeB9cQbNg99GH6Vl9QxcTrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997402381071-psabl334fh76op0a77j8kghro055j6mo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

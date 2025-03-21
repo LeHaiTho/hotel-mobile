@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +17,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useNavigation} from '@react-navigation/native';
+import useAuthStore from '@stores/authStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Tạo kiểu dữ liệu cho icon để đảm bảo nó có cấu trúc đúng
 type IconType = {
@@ -161,7 +166,22 @@ const menuData: {title: string; data: {name: string; icon: IconType}[]}[] = [
     ],
   },
 ];
+
 const DashboardScreen = () => {
+  const navigation = useNavigation<any>();
+  const {user, logout} = useAuthStore();
+
+  console.log('user', user);
+  const handleSignOut = async () => {
+    try {
+      // await auth().signOut();
+      await GoogleSignin.signOut();
+      await logout();
+      navigation.replace('Login');
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <View>
@@ -191,26 +211,21 @@ const DashboardScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Image
-                source={{
-                  uri: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                }}
-                style={{
-                  width: '100%',
-                  borderRadius: 100,
-                  height: '100%',
-                }}
-                resizeMode="contain"
-              />
+              {user?.image_url ? (
+                <Image
+                  source={{uri: user.image_url}}
+                  style={{width: '100%', height: '100%', borderRadius: 100}}
+                />
+              ) : null}
             </View>
             <View>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>
-                Chào Lê
+                Chào {user?.firstname?.split(' ')[0]}
               </Text>
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'center',
+                  // justifyContent: 'center',
                   alignItems: 'center',
 
                   gap: 3,
@@ -437,7 +452,7 @@ const DashboardScreen = () => {
             renderItem={({item, index, section}) => {
               const isFirstItem = index === 0;
               const isLastItem = index === section.data.length - 1;
-              console.log(section);
+              // console.log(section);
               return (
                 <TouchableOpacity
                   style={{
@@ -489,7 +504,8 @@ const DashboardScreen = () => {
               alignItems: 'center',
               flexDirection: 'row',
               marginTop: 14,
-            }}>
+            }}
+            onPress={handleSignOut}>
             <Text
               style={{
                 color: '#f20000',

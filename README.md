@@ -172,14 +172,222 @@ màu sắc:
 #FFB700
 #058633
 
+<!-- Nút gửi tin nhắn -->
 
- // "react-native-gesture-handler": "^2.9.0",
-    // "react-native-safe-area-context": "^4.10.1",
-    // "react-native-screens": "^4.4.0",
-    // "@gorhom/bottom-sheet": "^5.0.6",
-    // "@react-native-masked-view/masked-view": "^0.3.2",
-    // "@react-navigation/bottom-tabs": "^7.2.0",
-    // "@react-navigation/elements": "^2.2.5",
-    // "@react-navigation/native": "^7.0.14",
-    // "@react-navigation/native-stack": "^7.2.0",
-    // "@react-navigation/stack": "^7.1.1",
+<TouchableOpacity
+style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 12,
+            backgroundColor: '#0165FC',
+            width: '100%',
+            gap: 10,
+            borderRadius: 3,
+          }}>
+<Text style={{color: '#fff', fontSize: 16, fontWeight: '500'}}>
+Thêm chi tiết còn thiếu
+</Text>
+</TouchableOpacity>
+
+<TouchableOpacity
+style={{
+                      paddingVertical: 10,
+                    }}>
+<Text
+style={{
+                        color: '#0165FC',
+                        fontWeight: '600',
+                        fontSize: 16,
+                      }}>
+Xem tất cả
+</Text>
+</TouchableOpacity>
+
+// "react-native-gesture-handler": "^2.9.0",
+// "react-native-safe-area-context": "^4.10.1",
+// "react-native-screens": "^4.4.0",
+// "@gorhom/bottom-sheet": "^5.0.6",
+// "@react-native-masked-view/masked-view": "^0.3.2",
+// "@react-navigation/bottom-tabs": "^7.2.0",
+// "@react-navigation/elements": "^2.2.5",
+// "@react-navigation/native": "^7.0.14",
+// "@react-navigation/native-stack": "^7.2.0",
+// "@react-navigation/stack": "^7.1.1",
+
+Booking.com là một trong những nền tảng đặt phòng khách sạn lớn nhất thế giới, cung cấp nhiều tính năng đa dạng và tiện ích để hỗ trợ người dùng trong việc tìm kiếm, đặt chỗ và quản lý đặt phòng. Dưới đây là các chức năng chính của ứng dụng Booking.com hiện tại:
+
+1. Tìm kiếm khách sạn
+   Tìm kiếm theo địa điểm: Người dùng có thể tìm kiếm khách sạn theo thành phố, điểm đến, hoặc địa điểm cụ thể.
+
+Lọc kết quả:
+
+Theo giá cả, hạng sao, loại chỗ ở (khách sạn, căn hộ, biệt thự, v.v.).
+
+Theo tiện ích (wifi miễn phí, bể bơi, bữa sáng, v.v.).
+
+Theo khoảng cách từ trung tâm hoặc địa điểm nổi tiếng.
+
+Bản đồ tích hợp: Hiển thị vị trí khách sạn trên bản đồ để người dùng dễ dàng lựa chọn.
+
+2. Đặt phòng
+   Đặt phòng nhanh chóng: Người dùng có thể đặt phòng trực tiếp trên ứng dụng.
+
+Thanh toán linh hoạt:
+
+Thanh toán trực tuyến bằng thẻ tín dụng, ví điện tử, hoặc các phương thức thanh toán khác.
+
+Tùy chọn thanh toán tại khách sạn (Pay at Property).
+
+Xác nhận ngay lập tức: Nhận email và thông báo xác nhận đặt phòng ngay sau khi hoàn tất.
+
+3. Quản lý đặt phòng
+   Xem chi tiết đặt phòng: Người dùng có thể xem thông tin về khách sạn, ngày nhận phòng, ngày trả phòng, giá cả, và chính sách hủy phòng.
+
+Chỉnh sửa đặt phòng: Thay đổi thông tin đặt phòng (nếu khách sạn cho phép).
+
+Hủy đặt phòng: Hủy phòng trực tiếp trên ứng dụng (nếu chính sách hủy phòng cho phép).
+
+4. Đánh giá và nhận xét
+   Đọc đánh giá: Người dùng có thể xem đánh giá và nhận xét từ những khách hàng đã từng ở tại khách sạn.
+
+Viết đánh giá: Sau khi hoàn thành chuyến đi, người dùng có thể viết đánh giá và chia sẻ trải nghiệm của mình.
+
+5. Ưu đãi và khuyến mãi
+   Giá ưu đãi: Hiển thị các ưu đãi đặc biệt, giảm giá, hoặc gói dịch vụ hấp dẫn.
+
+Chương trình thành viên Genius: Người dùng có thể đăng ký chương trình thành viên để nhận ưu đãi độc quyền.
+
+6. Hỗ trợ khách hàng
+   Trò chuyện trực tiếp: Người dùng có thể liên hệ với bộ phận hỗ trợ khách hàng qua chat trực tiếp trên ứng dụng.
+
+Câu hỏi thường gặp (FAQ): Cung cấp thông tin giải đáp các thắc mắc phổ biến.
+
+7. Lưu trữ yêu thích
+   Danh sách yêu thích: Người dùng có thể lưu các khách sạn yêu thích để xem lại sau.
+
+Nhắc nhở đặt phòng: Nhận thông báo khi giá phòng giảm hoặc khi khách sạn sắp hết phòng.
+
+8. Tích hợp các dịch vụ khác
+   Đặt vé máy bay: Người dùng có thể đặt vé máy bay kết hợp với đặt phòng khách sạn.
+
+Thuê xe: Tích hợp dịch vụ thuê xe để thuận tiện cho chuyến đi.
+
+Tour và hoạt động: Đặt các tour du lịch hoặc hoạt động giải trí tại điểm đến.
+
+9. Thông báo và nhắc nhở
+   Thông báo giá: Nhận thông báo khi giá phòng thay đổi.
+
+Nhắc nhở đặt phòng: Nhắc nhở người dùng đặt phòng nếu họ đã xem một khách sạn nhiều lần.
+
+Thông báo chuyến đi: Nhắc nhở về ngày nhận phòng, ngày trả phòng, và các thông tin liên quan đến chuyến đi.
+
+10. Đa ngôn ngữ và đa tiền tệ
+    Hỗ trợ nhiều ngôn ngữ: Ứng dụng hỗ trợ nhiều ngôn ngữ để phục vụ người dùng toàn cầu.
+
+Chuyển đổi tiền tệ: Người dùng có thể xem giá phòng bằng nhiều loại tiền tệ khác nhau.
+
+11. Chế độ Offline
+    Truy cập thông tin đặt phòng offline: Người dùng có thể xem thông tin đặt phòng ngay cả khi không có kết nối internet.
+
+12. Bảo mật và an toàn
+    Bảo mật thông tin: Đảm bảo thông tin cá nhân và thanh toán của người dùng được bảo vệ.
+
+Xác thực hai lớp: Tăng cường bảo mật cho tài khoản người dùng.
+
+13. Tích hợp với các nền tảng khác
+    Liên kết với Google Maps: Giúp người dùng dễ dàng tìm đường đến khách sạn.
+
+Tích hợp với Apple Wallet/Google Pay: Lưu thông tin đặt phòng vào ví điện tử để tiện theo dõi.
+
+14. Chức năng dành cho chủ khách sạn
+    Quản lý đặt phòng: Chủ khách sạn có thể quản lý đặt phòng, cập nhật thông tin phòng, và xem đánh giá từ khách hàng.
+
+Nhận thông báo: Nhận thông báo về các đặt phòng mới hoặc yêu cầu từ khách hàng.
+
+<!-- Công việc ngày 15/2 -->
+
+npm i react-native-calendars
+
+<!-- Quy trình github -->
+
+🔥 Quy trình làm việc với Git theo từng chức năng
+🛠️ Pull code mới nhất từ remote repository
+Trước khi bắt đầu làm việc, luôn đảm bảo code của bạn cập nhật mới nhất từ nhánh chính (main hoặc develop):
+
+sh
+Sao chép
+Chỉnh sửa
+git checkout develop # Chuyển sang nhánh develop (hoặc main)
+git pull origin develop # Lấy code mới nhất
+📌 Tạo nhánh mới cho từng chức năng
+Mỗi chức năng mới nên có một nhánh riêng để dễ quản lý:
+
+sh
+Sao chép
+Chỉnh sửa
+git checkout -b feature/ten-chuc-nang
+Ví dụ: Nếu bạn đang làm tính năng đăng nhập, bạn có thể đặt tên nhánh là:
+
+sh
+Sao chép
+Chỉnh sửa
+git checkout -b feature/login
+👨‍💻 Code & Commit từng thay đổi nhỏ
+Khi viết code, nên chia commit thành từng phần nhỏ, mỗi commit thể hiện một bước quan trọng:
+
+sh
+Sao chép
+Chỉnh sửa
+git add . # Thêm tất cả file thay đổi vào staging
+git commit -m "Thêm giao diện đăng nhập"
+👉 Lưu ý: Viết commit message rõ ràng và có ý nghĩa.
+
+🔄 Luôn đồng bộ với nhánh chính
+Trước khi push code lên, bạn nên pull code mới nhất từ nhánh chính (develop hoặc main) để tránh conflict:
+
+sh
+Sao chép
+Chỉnh sửa
+git checkout develop # Chuyển sang nhánh chính
+git pull origin develop # Lấy code mới nhất
+git checkout feature/login # Quay lại nhánh tính năng
+git merge develop # Gộp code mới nhất vào nhánh đang làm
+Nếu có conflict, bạn cần giải quyết xung đột, sau đó commit lại.
+
+🚀 Push code lên GitHub
+Khi hoàn thành tính năng, bạn push code lên repository:
+
+sh
+Sao chép
+Chỉnh sửa
+git push origin feature/login
+📢 Tạo Pull Request (PR) để merge vào develop/main
+
+Vào GitHub/GitLab/Bitbucket
+Tạo Pull Request (PR) từ feature/login vào develop
+Chờ code review và fix nếu cần
+Sau khi được duyệt, merge vào develop hoặc main
+🧹 Xóa nhánh sau khi merge
+Sau khi chức năng đã được merge thành công, hãy xóa nhánh cũ để dọn dẹp:
+
+sh
+Sao chép
+Chỉnh sửa
+git branch -d feature/login # Xóa nhánh local
+git push origin --delete feature/login # Xóa nhánh trên GitHub
+📌 Tóm tắt quy trình chuẩn Git khi làm việc theo từng chức năng
+1️⃣ Pull code mới nhất
+2️⃣ Tạo nhánh riêng cho chức năng
+3️⃣ Code & Commit từng thay đổi nhỏ
+4️⃣ Pull code mới nhất từ nhánh chính trước khi push
+5️⃣ Push code lên GitHub
+6️⃣ Tạo Pull Request để merge vào nhánh chính
+7️⃣ Xóa nhánh sau khi merge thành công
+
+👉 Nếu team bạn làm theo Git Flow, bạn có thể mở rộng với các nhánh như:
+
+feature/_ (Tính năng mới)
+bugfix/_ (Fix bug)
+hotfix/\* (Sửa lỗi khẩn cấp)
+"react-native-safe-area-context": "^4.10.1",

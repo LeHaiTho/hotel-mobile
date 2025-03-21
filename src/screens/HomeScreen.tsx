@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {
   FlatList,
   ScrollView,
@@ -10,6 +10,8 @@ import {
   Dimensions,
   StyleSheet,
   Pressable,
+  Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {Icon} from 'react-native-vector-icons/Icon';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -22,6 +24,8 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
+import ModalComponent from '@components/ModalComponent';
+import SearchComponent from '@components/SearchComponent';
 
 // Tạo kiểu dữ liệu cho icon để đảm bảo nó có cấu trúc đúng
 type IconType = {
@@ -164,9 +168,10 @@ const renderItem = ({item}: any) => (
       borderRadius: 50,
       paddingHorizontal: 12,
       justifyContent: 'center',
-      paddingVertical: 10,
       borderWidth: 0.7,
       borderColor: '#fff',
+      minHeight: 50,
+      backgroundColor: 'rgba(255,255,255,0.2)',
       gap: 8,
     }}>
     {getIcon(item.icon)}
@@ -195,14 +200,16 @@ const HomeScreen = () => {
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{
           paddingHorizontal: 16,
+          paddingVertical: 10,
           gap: 5,
           backgroundColor: '#003b95',
-          paddingVertical: 10,
+          paddingBottom: 15,
         }}
       />
       <ScrollView contentContainerStyle={{}}>
         {/* Tìm kiếm */}
-        <View
+        <SearchComponent />
+        {/* <View
           style={{
             padding: 16,
           }}>
@@ -280,7 +287,8 @@ const HomeScreen = () => {
               borderWidth: 3,
               borderColor: '#FFB700',
               gap: 10,
-            }}>
+            }}
+            onPress={openModal}>
             <Text
               style={{
                 paddingVertical: 14,
@@ -290,7 +298,7 @@ const HomeScreen = () => {
               Tìm
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         {/* Khuyến mãi */}
         <View
           style={{
