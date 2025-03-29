@@ -2,13 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {Alert} from 'react-native';
 import {create} from 'zustand';
+import {API_URL} from '../utils/constants';
 
 interface AuthStore {
-  user: any | null;
-  token: string | null;
+  user?: any | null;
+  token?: string | null;
   login: (user: any, token: string) => Promise<void>;
   logout: () => Promise<void>;
-  loadUser: () => Promise<void>;
+  getUser: () => Promise<void>;
 }
 const useAuthStore = create<AuthStore>(set => ({
   user: null,
@@ -28,17 +29,14 @@ const useAuthStore = create<AuthStore>(set => ({
   },
 
   // Lấy user và token từ local storage(async storage)
-  loadUser: async () => {
+  getUser: async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
-      const response = await axios.get(
-        `http://192.168.1.115:5000/auth/get-info-user`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axios.get(`${API_URL}/auth/get-info-user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       set({user: response.data.user});
     }
   },

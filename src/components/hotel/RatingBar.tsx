@@ -1,5 +1,6 @@
 import {View, Text} from 'react-native';
 import React from 'react';
+import {COLORS} from '@styles/colors';
 
 type RatingBarProps = {
   title: string;
@@ -13,8 +14,8 @@ const RatingBar = ({
   title,
   rating,
   maxRating,
-  fillColor = '#003b95',
-  backgroundColor = '#e0e0e0',
+  fillColor = COLORS.primaryDark,
+  backgroundColor = COLORS.grayLight,
 }: RatingBarProps) => {
   const rate = (rating / maxRating) * 10;
   const percentTage = (rating / maxRating) * 100;
@@ -22,11 +23,11 @@ const RatingBar = ({
   // Hàm xác định màu sắc của RatingBar
   const getFillColor = (percentTage: number): string => {
     if (percentTage >= 80) {
-      return '#058633'; // Xanh đen
+      return COLORS.green; // Xanh đen
     } else if (percentTage >= 60 && percentTage < 80) {
-      return '#003b95'; // Xanh tím
+      return COLORS.primaryDark; // Xanh tím
     } else {
-      return '#D90F1D';
+      return COLORS.red;
     }
   };
   return (
@@ -42,13 +43,13 @@ const RatingBar = ({
         }}>
         <Text
           style={{
-            color: '#000',
+            color: COLORS.black,
           }}>
           {title}
         </Text>
         <Text
           style={{
-            color: '#000',
+            color: COLORS.black,
           }}>
           {rate}
         </Text>

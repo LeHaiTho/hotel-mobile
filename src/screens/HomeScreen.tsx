@@ -26,6 +26,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Foundation from 'react-native-vector-icons/Foundation';
 import ModalComponent from '@components/ModalComponent';
 import SearchComponent from '@components/SearchComponent';
+import {useRoute} from '@react-navigation/native';
 
 // Tạo kiểu dữ liệu cho icon để đảm bảo nó có cấu trúc đúng
 type IconType = {
@@ -185,7 +186,12 @@ const renderItem = ({item}: any) => (
     </Text>
   </TouchableOpacity>
 );
+
 const HomeScreen = () => {
+  const route = useRoute();
+  const {currentLocation}: any = route?.params || {};
+
+  console.log('currentLocation', currentLocation);
   return (
     <View
       style={{
@@ -208,7 +214,7 @@ const HomeScreen = () => {
       />
       <ScrollView contentContainerStyle={{}}>
         {/* Tìm kiếm */}
-        <SearchComponent />
+        <SearchComponent location={currentLocation} />
         {/* <View
           style={{
             padding: 16,

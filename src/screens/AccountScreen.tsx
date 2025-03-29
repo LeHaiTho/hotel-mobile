@@ -12,10 +12,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // Tạo kiểu dữ liệu cho icon để đảm bảo nó có cấu trúc đúng
 type IconType = {
@@ -107,29 +108,37 @@ const getIcon = (icon: IconType): JSX.Element | null => {
   }
 };
 const AccountScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   return (
     <ScrollView>
       <View
         style={{
           backgroundColor: '#033B95',
           paddingVertical: 16,
-          paddingHorizontal: 50,
+          paddingHorizontal: 20,
           justifyContent: 'center',
           alignItems: 'center',
-          gap: 20,
+          gap: 10,
         }}>
         <View
           style={{
             backgroundColor: 'gray',
-            width: 50,
-            height: 50,
-            borderRadius: 25,
+            borderRadius: 100,
             justifyContent: 'center',
             alignItems: 'center',
+            padding: 15,
+            borderWidth: 1,
+            borderColor: 'yellow',
           }}>
-          <EvilIcons name="user" size={40} color="#fff" />
+          <AntDesign name="user" size={35} color="#fff" />
         </View>
-
+        <Text
+          style={{
+            color: '#fff',
+            fontWeight: 'bold',
+          }}>
+          Tài khoản và chuyến đi của bạn
+        </Text>
         <Text
           style={{
             textAlign: 'center',
@@ -144,8 +153,10 @@ const AccountScreen = () => {
             paddingVertical: 10,
             borderRadius: 3,
             justifyContent: 'center',
+            width: '100%',
             alignItems: 'center',
-          }}>
+          }}
+          onPress={() => navigation.navigate('Login')}>
           <Text
             style={{
               color: '#fff',

@@ -6,11 +6,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useAuthStore from '@stores/authStore';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-
+import AccountScreen from '@screens/AccountScreen';
+import {RouteProp} from '@react-navigation/native';
+import {useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({route}: {route: RouteProp<any, any>}) => {
   const {user} = useAuthStore();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -22,8 +26,9 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: '#000',
       }}>
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         component={HomeScreen}
+        initialParams={route?.params}
         options={{
           tabBarIcon: ({color, size}: {color: string; size: number}) => (
             <AntDesign name="search1" color={color} size={size} />
@@ -48,10 +53,11 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
+        name={user ? 'Dashboard' : 'Account'}
+        component={user ? DashboardScreen : AccountScreen}
         options={{
-          headerShown: false,
+          headerShown: user ? false : true,
+          title: user && '',
           tabBarIcon: ({color, size}: {color: string; size: number}) =>
             user ? (
               <View
@@ -72,7 +78,7 @@ const TabNavigator = () => {
             ) : (
               <EvilIcons name="user" color={color} size={35} />
             ),
-          tabBarLabel: 'Tài khoản',
+          tabBarLabel: user ? 'Tài khoản' : 'Đăng nhập',
         }}
       />
     </Tab.Navigator>

@@ -414,6 +414,19 @@ const ReservationDetailScreen = () => {
             <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
               Thanh toán được xử lý bởi chỗ nghỉ
             </Text>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}>
+              <Text
+                style={{
+                  color: '#0165FC',
+                  fontWeight: '600',
+                  fontSize: 16,
+                }}>
+                Thông tin về giá
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

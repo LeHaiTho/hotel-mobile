@@ -1,4 +1,7 @@
 import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -6,17 +9,36 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import IconComponent from '@components/IconComponent';
 import SlideUpViewComponent from '@components/SlideUpViewComponent';
 import RadioButtonComponent from '@components/RadioButtonComponent';
 import CheckboxComponent from '@components/CheckboxComponent';
+import useAuthStore from '@stores/authStore';
+import useInfoBookingStore from '@stores/InfoBookingStore';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import ModalComponent from '@components/ModalComponent';
+import {COLORS} from '@styles/colors';
 
-const BookingInfomationScreen = () => {
+const BookingInfomationScreen = ({route}: any) => {
+  const {hotel} = route.params || {};
+  console.log('hotel', hotel);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<boolean>(true);
   const [selectedPurpose, setSelectedPurpose] = useState<string>('');
   const [isChecked, setIsChecked] = useState<boolean>(true);
+  const {user} = useAuthStore();
+  const {formData, updateFormData, resetFormData, validateForm, errors} =
+    useInfoBookingStore();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const inputRef = {
+    guest_firstname: useRef<TextInput>(null),
+    guest_lastname: useRef<TextInput>(null),
+    guest_email: useRef<TextInput>(null),
+    guest_phone: useRef<TextInput>(null),
+  };
 
   // Mục đích chuyến đi
   const options = ['Vui chơi/ giải trí', 'Công tác'];
@@ -26,8 +48,54 @@ const BookingInfomationScreen = () => {
   const onOpen = () => {
     setIsVisible(true);
   };
+  const handleUpdateFormData = (field: string, value: string) => {
+    updateFormData(field, value);
+  };
+  const handleSubmitForm = () => {
+    const isValid = validateForm();
+
+    if (isValid) {
+      navigation.navigate('BookingDetail', {
+        hotel,
+      });
+    } else {
+      const errorFields = Object.keys(errors).find(
+        key => errors[key as keyof typeof errors] !== '',
+      );
+      if (errorFields) {
+        inputRef[errorFields as keyof typeof inputRef].current?.focus();
+      }
+    }
+  };
+  useEffect(() => {
+    if (user) {
+      updateFormData('guest_firstname', user.firstname);
+      updateFormData('guest_lastname', user.lastname);
+      updateFormData('guest_email', user.email);
+    }
+  }, [user]);
   return (
     <>
+      <ModalComponent
+        closeModal={() => setIsVisibleModal(false)}
+        modalVisible={isVisibleModal}
+        touchable={false}
+        containerStyle={{
+          borderRadius: 4,
+          width: '70%',
+        }}
+        children={
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 10,
+            }}>
+            <ActivityIndicator size={50} color="#0165FC" />
+            <Text style={{color: '#000'}}>Đang tải thông tin...</Text>
+          </View>
+        }
+      />
       <ScrollView
         contentContainerStyle={{
           padding: 16,
@@ -36,28 +104,30 @@ const BookingInfomationScreen = () => {
         }}
         showsVerticalScrollIndicator={false}>
         <View style={{gap: 16}}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 12,
-              backgroundColor: '#fff',
-              borderRadius: 3,
-              borderWidth: 1,
-              borderColor: '#0165FC',
-              gap: 10,
-            }}>
-            <IconComponent
-              name="user"
-              size={18}
-              library="SimpleLineIcons"
-              color="#0165FC"
-            />
-            <Text style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
-              Đăng nhập để tiết kiệm
-            </Text>
-          </TouchableOpacity>
+          {!user && (
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 12,
+                backgroundColor: '#fff',
+                borderRadius: 3,
+                borderWidth: 1,
+                borderColor: '#0165FC',
+                gap: 10,
+              }}>
+              <IconComponent
+                name="user"
+                size={18}
+                library="SimpleLineIcons"
+                color="#0165FC"
+              />
+              <Text style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
+                Đăng nhập để tiết kiệm
+              </Text>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               gap: 5,
@@ -83,18 +153,35 @@ const BookingInfomationScreen = () => {
                 borderColor: '#939394',
                 borderRadius: 3,
               }}>
-              <TextInput style={{flex: 1, color: '#000'}}></TextInput>
-
-              <IconComponent
-                name="checkmark-circle-outline"
-                library="Ionicons"
-                color="#058633"
+              <TextInput
+                ref={inputRef.guest_firstname}
+                style={{flex: 1, color: '#000'}}
+                value={formData.guest_firstname}
+                onChangeText={value =>
+                  handleUpdateFormData('guest_firstname', value)
+                }
               />
+
+              {errors?.guest_firstname ? (
+                <IconComponent
+                  name="alert-circle-outline"
+                  library="Ionicons"
+                  color="#FF0000"
+                />
+              ) : (
+                <IconComponent
+                  name="checkmark-circle-outline"
+                  library="Ionicons"
+                  color="#058633"
+                />
+              )}
             </View>
             {/* error message*/}
-            <Text style={{color: '#f20000', fontSize: 13}}>
-              Vui lòng nhập họ của bạn
-            </Text>
+            {errors?.guest_firstname && (
+              <Text style={{color: '#f20000', fontSize: 13}}>
+                {errors.guest_firstname}
+              </Text>
+            )}
           </View>
           {/* Họ */}
           <View
@@ -122,18 +209,35 @@ const BookingInfomationScreen = () => {
                 borderColor: '#939394',
                 borderRadius: 3,
               }}>
-              <TextInput style={{flex: 1, color: '#000'}} />
-
-              <IconComponent
-                name="alert-circle-outline"
-                library="Ionicons"
-                color="#FF0000"
+              <TextInput
+                ref={inputRef.guest_lastname}
+                style={{flex: 1, color: '#000'}}
+                value={formData.guest_lastname}
+                onChangeText={value =>
+                  handleUpdateFormData('guest_lastname', value)
+                }
               />
+
+              {errors?.guest_lastname ? (
+                <IconComponent
+                  name="alert-circle-outline"
+                  library="Ionicons"
+                  color="#FF0000"
+                />
+              ) : (
+                <IconComponent
+                  name="checkmark-circle-outline"
+                  library="Ionicons"
+                  color="#058633"
+                />
+              )}
             </View>
             {/* error message*/}
-            {/* <Text style={{color: '#f20000', fontSize: 13}}>
-            Vui lòng nhập họ của bạn
-          </Text> */}
+            {errors?.guest_lastname && (
+              <Text style={{color: '#f20000', fontSize: 13}}>
+                {errors.guest_lastname}
+              </Text>
+            )}
           </View>
           {/* Địa chỉ email */}
           <View
@@ -161,18 +265,35 @@ const BookingInfomationScreen = () => {
                 borderColor: '#939394',
                 borderRadius: 3,
               }}>
-              <TextInput style={{flex: 1, color: '#000'}} />
-
-              <IconComponent
-                name="alert-circle-outline"
-                library="Ionicons"
-                color="#FF0000"
+              <TextInput
+                ref={inputRef.guest_email}
+                style={{flex: 1, color: '#000'}}
+                value={formData.guest_email}
+                onChangeText={value =>
+                  handleUpdateFormData('guest_email', value)
+                }
               />
+
+              {errors?.guest_email ? (
+                <IconComponent
+                  name="alert-circle-outline"
+                  library="Ionicons"
+                  color="#FF0000"
+                />
+              ) : (
+                <IconComponent
+                  name="checkmark-circle-outline"
+                  library="Ionicons"
+                  color="#058633"
+                />
+              )}
             </View>
             {/* error message*/}
-            {/* <Text style={{color: '#f20000', fontSize: 13}}>
-            Vui lòng nhập họ của bạn
-          </Text> */}
+            {errors?.guest_email && (
+              <Text style={{color: '#f20000', fontSize: 13}}>
+                {errors.guest_email}
+              </Text>
+            )}
           </View>
           {/* Vùng quốc gia */}
           <View
@@ -206,10 +327,15 @@ const BookingInfomationScreen = () => {
 
               <View
                 style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-                <IconComponent
+                {/* <IconComponent
                   name="alert-circle-outline"
                   library="Ionicons"
                   color="#FF0000"
+                /> */}
+                <IconComponent
+                  name="checkmark-circle-outline"
+                  library="Ionicons"
+                  color="#058633"
                 />
                 <TouchableOpacity>
                   <IconComponent
@@ -222,9 +348,11 @@ const BookingInfomationScreen = () => {
               </View>
             </TouchableOpacity>
             {/* error message*/}
-            {/* <Text style={{color: '#f20000', fontSize: 13}}>
-            Vui lòng nhập họ của bạn
-          </Text> */}
+            {/* {errors?.guest_country && (
+              <Text style={{color: '#f20000', fontSize: 13}}>
+                {errors.guest_country}
+              </Text>
+            )} */}
           </View>
           {/* Điện thại */}
           <View
@@ -253,20 +381,35 @@ const BookingInfomationScreen = () => {
                 borderRadius: 3,
               }}>
               <TextInput
+                ref={inputRef.guest_phone}
                 style={{flex: 1, color: '#000'}}
                 keyboardType="phone-pad"
+                value={formData.guest_phone}
+                onChangeText={value =>
+                  handleUpdateFormData('guest_phone', value)
+                }
               />
 
-              <IconComponent
-                name="alert-circle-outline"
-                library="Ionicons"
-                color="#FF0000"
-              />
+              {errors?.guest_phone ? (
+                <IconComponent
+                  name="alert-circle-outline"
+                  library="Ionicons"
+                  color="#FF0000"
+                />
+              ) : (
+                <IconComponent
+                  name="checkmark-circle-outline"
+                  library="Ionicons"
+                  color="#058633"
+                />
+              )}
             </View>
             {/* error message*/}
-            {/* <Text style={{color: '#f20000', fontSize: 13}}>
-            Vui lòng nhập họ của bạn
-          </Text> */}
+            {errors?.guest_phone && (
+              <Text style={{color: '#f20000', fontSize: 13}}>
+                {errors.guest_phone}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -321,21 +464,24 @@ const BookingInfomationScreen = () => {
           shadowRadius: 3, // Độ mờ của shadow
           elevation: 10, // Hỗ trợ shadow trên Android
         }}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 12,
-            backgroundColor: '#0165FC',
-            width: '100%',
-            gap: 10,
-            borderRadius: 3,
-          }}>
+        <Pressable
+          style={({pressed}) => [
+            {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 12,
+              backgroundColor: pressed ? COLORS.primaryLight : COLORS.primary,
+              width: '100%',
+              gap: 10,
+              borderRadius: 3,
+            },
+          ]}
+          onPress={handleSubmitForm}>
           <Text style={{color: '#fff', fontSize: 16, fontWeight: '500'}}>
             Thêm chi tiết còn thiếu
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <SlideUpViewComponent visible={isVisible} onClose={onClose}>
         <ScrollView

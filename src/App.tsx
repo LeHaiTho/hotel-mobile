@@ -1,40 +1,34 @@
 import 'react-native-gesture-handler';
-(globalThis as any).RNFB_SILENCE_MODULAR_DEPRECATION_WARNINGS = true;
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
-import {
-  AccountScreen,
-  LoginScreen,
-  DashboardScreen,
-  HomeScreen,
-  EmailVerificationScreen,
-  OTPVerificationScreen,
-  HotelDetailScreen,
-  HotelImageGalleryScreen,
-  RoomListScreen,
-  BookingInfomationScreen,
-  BookingDetailScreen,
-  BookingConfirmationScreen,
-  ReservationDetailScreen,
-  AdjustBookingDateScreen,
-  HotelSearchResultsScreen,
-  SearchLocationScreen,
-  Map,
-} from './screens';
-import {HotelCard, IconComponent} from './components';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import useAuthStore from '@stores/authStore';
 import TabNavigator from '@naviagtion/TabNavigator';
-const Stack = createStackNavigator();
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import useAuthStore from '@stores/authStore';
+import React, {useEffect} from 'react';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {
+  BookingInfomationScreen,
+  HotelDetailScreen,
+  HotelSearchResultsScreen,
+  LoginScreen,
+  RoomListScreen,
+  SearchLocationScreen,
+  BookingConfirmationScreen,
+  BookingDetailScreen,
+  ReservationDetailScreen,
+} from './screens';
+import {useNavigation} from '@react-navigation/native';
+import IconComponent from '@components/IconComponent';
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const {loadUser, user, token} = useAuthStore();
+  const {getUser} = useAuthStore();
   useEffect(() => {
-    loadUser();
+    const getUserInfo = async () => {
+      await getUser();
+    };
+    getUserInfo();
   }, []);
 
   return (
@@ -64,25 +58,85 @@ const App = () => {
           screenOptions={{
             headerStyle: {
               backgroundColor: '#003b95',
-              elevation: 0,
-              shadowOpacity: 0,
-              borderBottomWidth: 0,
             },
+            headerShadowVisible: false,
             headerTitleStyle: {color: '#fff'},
-            headerBackTitleStyle: {color: '#fff'},
             headerTitleAlign: 'center',
           }}>
-          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen
             name="Main"
             component={TabNavigator}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+            }}
           />
+          <Stack.Screen name="Login" component={LoginScreen} />
 
           <Stack.Screen
             name="SearchLocation"
             component={SearchLocationScreen}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="HotelSearchResults"
+            component={HotelSearchResultsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="HotelDetail"
+            component={HotelDetailScreen}
+            options={{
+              headerTintColor: '#fff',
+              title: '',
+            }}
+          />
+          <Stack.Screen
+            name="RoomList"
+            component={RoomListScreen}
+            options={{
+              headerTintColor: '#fff',
+              title: '',
+            }}
+          />
+          <Stack.Screen
+            name="BookingInfomation"
+            component={BookingInfomationScreen}
+            options={{
+              headerTitleAlign: 'left',
+              headerTintColor: '#fff',
+              title: 'Điền thông tin của bạn',
+            }}
+          />
+          <Stack.Screen
+            name="BookingDetail"
+            component={BookingDetailScreen}
+            options={{
+              headerTitleAlign: 'left',
+              headerTintColor: '#fff',
+              title: 'Chi tiết đặt phòng',
+            }}
+          />
+          <Stack.Screen
+            name="BookingConfirmation"
+            component={BookingConfirmationScreen}
+            options={{
+              headerTintColor: '#fff',
+              headerTitleAlign: 'left',
+              title: 'Xác nhận đặt phòng',
+            }}
+          />
+          <Stack.Screen
+            name="ReservationDetail"
+            component={ReservationDetailScreen}
+            options={{
+              headerTintColor: '#fff',
+              headerTitleAlign: 'left',
+              title: 'Chi tiết đặt phòng',
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

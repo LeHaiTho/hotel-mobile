@@ -8,34 +8,18 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {IconComponent, ImageGrid, RatingBar} from '../components/index';
-
-const images = [
-  {
-    id: 1,
-    uri: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/503753216.jpg?k=1de737ea2d6dd66b851171bd154d27e021b84fe6b07728bd27c0c3dfc81577bd&o=',
-  },
-  {
-    id: 2,
-    uri: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/503753216.jpg?k=1de737ea2d6dd66b851171bd154d27e021b84fe6b07728bd27c0c3dfc81577bd&o=',
-  },
-  {
-    id: 3,
-    uri: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/503753216.jpg?k=1de737ea2d6dd66b851171bd154d27e021b84fe6b07728bd27c0c3dfc81577bd&o=',
-  },
-  {
-    id: 4,
-    uri: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/503753216.jpg?k=1de737ea2d6dd66b851171bd154d27e021b84fe6b07728bd27c0c3dfc81577bd&o=',
-  },
-  {
-    id: 5,
-    uri: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/503753216.jpg?k=1de737ea2d6dd66b851171bd154d27e021b84fe6b07728bd27c0c3dfc81577bd&o=',
-  },
-];
+import {formatDate} from '@utils/constants';
+import {API_URL} from '../utils/constants';
+import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {COLORS} from '@styles/colors';
 
 // danh sách tiện nghi
 const amenities = [
@@ -82,12 +66,16 @@ const amenities = [
     iconName: 'person',
   },
 ];
-const remainingCount = 43;
-const HotelDetailScreen = () => {
+
+const HotelDetailScreen = ({route}: any) => {
+  const {hotel} = route.params;
+  const remainingCount = hotel?.images?.split(',').length - 5;
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  console.log('hotel', hotel);
   return (
     <View
       style={{
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.white,
         flex: 1,
       }}>
       <ScrollView
@@ -107,14 +95,14 @@ const HotelDetailScreen = () => {
               fontSize: 24,
               fontWeight: '700',
               lineHeight: 35,
-              color: '#000',
+              color: COLORS.black,
               flex: 1,
             }}>
-            KT MERAKI BOUTIQUE - Bui vien walking street
+            {hotel?.name}
           </Text>
           <View
             style={{
-              backgroundColor: '#003b95',
+              backgroundColor: COLORS.primaryDark,
               padding: 4,
               borderRadius: 5,
               borderBottomLeftRadius: 0,
@@ -122,7 +110,7 @@ const HotelDetailScreen = () => {
             }}>
             <Text
               style={{
-                color: '#fff',
+                color: COLORS.white,
                 fontSize: 16,
               }}>
               7.1
@@ -139,13 +127,13 @@ const HotelDetailScreen = () => {
             style={{
               flexDirection: 'row',
             }}>
-            <AntDesign name="star" color="#FFB700" size={20} />
-            <AntDesign name="star" color="#FFB700" size={20} />
-            <AntDesign name="star" color="#FFB700" size={20} />
+            <AntDesign name="star" color={COLORS.yellowGold} size={20} />
+            <AntDesign name="star" color={COLORS.yellowGold} size={20} />
+            <AntDesign name="star" color={COLORS.yellowGold} size={20} />
           </View>
           <View
             style={{
-              backgroundColor: '#FFB700',
+              backgroundColor: COLORS.yellowGold,
               paddingHorizontal: 4,
               paddingVertical: 1,
               flexDirection: 'row',
@@ -154,8 +142,8 @@ const HotelDetailScreen = () => {
               borderRadius: 4,
               gap: 5,
             }}>
-            <AntDesign name="like1" color="#fff" size={14} />
-            <FontAwesome5 name="plus" color="#fff" size={12} />
+            <AntDesign name="like1" color={COLORS.white} size={14} />
+            <FontAwesome5 name="plus" color={COLORS.white} size={12} />
           </View>
         </View>
 
@@ -163,32 +151,61 @@ const HotelDetailScreen = () => {
         <View style={styles.container}>
           {/* Hàng 1 */}
           <View style={styles.row}>
-            {images.slice(0, 2).map(image => (
-              <Image
-                key={image.id}
-                source={{uri: image.uri}}
-                style={styles.image}
-              />
-            ))}
+            {hotel?.images
+              ?.split(',')
+              ?.slice(0, 2)
+              .map((image: any, index: number) => (
+                <Image
+                  key={index}
+                  source={{
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotel?.id}/${image}`,
+                  }}
+                  style={styles.image}
+                />
+              ))}
           </View>
 
           {/* Hàng 2 */}
           <View style={styles.row}>
-            {images.slice(2, 4).map(image => (
-              <Image
-                key={image.id}
-                source={{uri: image.uri}}
-                style={styles.image}
-              />
-            ))}
+            {hotel?.images
+              ?.split(',')
+              ?.slice(2, 4)
+              .map((image: any, index: number) => (
+                <Image
+                  key={index}
+                  source={{
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotel?.id}/${image}`,
+                  }}
+                  style={styles.image}
+                />
+              ))}
 
             {/* Ảnh cuối cùng có hiệu ứng đen mờ */}
-            <View style={styles.overlayContainer}>
-              <Image source={{uri: images[4].uri}} style={styles.image} />
-              <View style={styles.overlay}>
-                <Text style={styles.overlayText}>+{remainingCount}</Text>
+            {hotel?.images?.split(',').length > 6 ? (
+              <View style={styles.overlayContainer}>
+                <Image
+                  key={hotel?.images?.split(',')[4]}
+                  source={{
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${
+                      hotel?.id
+                    }/${hotel?.images?.split(',')[4]}`,
+                  }}
+                  style={styles.image}
+                />
+                <View style={styles.overlay}>
+                  <Text style={styles.overlayText}>+{remainingCount}</Text>
+                </View>
               </View>
-            </View>
+            ) : (
+              <Image
+                source={{
+                  uri: `${API_URL}/hotel-properties/hotel/get-image/${
+                    hotel?.id
+                  }/${hotel?.images?.split(',')[4]}`,
+                }}
+                style={styles.image}
+              />
+            )}
           </View>
         </View>
 
@@ -215,7 +232,7 @@ const HotelDetailScreen = () => {
                 }}>
                 <View
                   style={{
-                    backgroundColor: '#E5E5E5',
+                    backgroundColor: COLORS.grayLight,
                     width: 45,
                     height: 45,
                     justifyContent: 'center',
@@ -226,14 +243,14 @@ const HotelDetailScreen = () => {
                     name={item.iconName}
                     library={item.library}
                     size={24}
-                    color="#666666"
+                    color={COLORS.gray}
                   />
                 </View>
                 <Text
                   style={{
                     textAlign: 'center',
                     fontSize: 10,
-                    color: '#000',
+                    color: COLORS.black,
                   }}
                   numberOfLines={2}>
                   {item.name}
@@ -259,38 +276,39 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontWeight: '500',
                 }}>
                 Nhận phòng
               </Text>
-              <Text style={{fontWeight: '700', color: '#0165FC'}}>
-                Th 7, 25 thg 1
+              <Text style={{fontWeight: '700', color: COLORS.primary}}>
+                {formatDate(hotel?.checkInDate, true)}
               </Text>
             </View>
             <View style={{flex: 1}}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontWeight: '500',
                 }}>
                 Trả phòng
               </Text>
-              <Text style={{fontWeight: '700', color: '#0165FC'}}>
-                Th 7, 25 thg 1
+              <Text style={{fontWeight: '700', color: COLORS.primary}}>
+                {formatDate(hotel?.checkOutDate, true)}
               </Text>
             </View>
           </View>
           <View>
             <Text
               style={{
-                color: '#000',
+                color: COLORS.black,
                 fontWeight: '500',
               }}>
               Số lượng phòng và khách
             </Text>
-            <Text style={{fontWeight: '700', color: '#0165FC'}}>
-              1 phòng, 2 người lớn, 0 trẻ em
+            <Text style={{fontWeight: '700', color: COLORS.primary}}>
+              {hotel?.capacity?.adults} người lớn, {hotel?.capacity?.children}{' '}
+              trẻ em
             </Text>
           </View>
         </View>
@@ -308,7 +326,12 @@ const HotelDetailScreen = () => {
               style={{
                 color: '#000',
               }}>
-              Giá cho 6 đêm, 2 người lớn
+              Giá cho{' '}
+              {moment(hotel?.checkOutDate).diff(
+                moment(hotel?.checkInDate),
+                'days',
+              )}{' '}
+              đêm, {hotel?.capacity?.adults} người lớn
             </Text>
             <Text
               style={{
@@ -316,20 +339,20 @@ const HotelDetailScreen = () => {
                 fontWeight: '700',
                 fontSize: 20,
               }}>
-              VND 2.721.627
+              VND {hotel?.Rooms?.[0]?.sotien?.toLocaleString()}
             </Text>
             <Text
               style={{
                 fontSize: 12,
               }}>
-              Đã bao gồm thuế và phí
+              {/* Đã bao gồm thuế và phí */}
             </Text>
           </View>
           <IconComponent
             name="right"
             library="AntDesign"
             size={18}
-            color="#666666"
+            color={COLORS.gray}
           />
         </TouchableOpacity>
 
@@ -345,13 +368,13 @@ const HotelDetailScreen = () => {
               flexDirection: 'row',
               padding: 16,
               borderWidth: 1,
-              borderColor: '#E5E5E5',
+              borderColor: COLORS.borderGray,
               borderRadius: 8,
               gap: 20,
             }}>
             <IconComponent
               name="credit-card-off-outline"
-              color="#387053"
+              color={COLORS.green}
               library="MaterialCommunityIcons"
               size={20}
             />
@@ -362,7 +385,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 16,
                   fontWeight: '700',
                 }}>
@@ -370,7 +393,7 @@ const HotelDetailScreen = () => {
               </Text>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   // flexWrap: 'wrap',
                   // flexShrink: 1,
                 }}>
@@ -389,13 +412,13 @@ const HotelDetailScreen = () => {
           <View
             style={{
               gap: 16,
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
             <Text
               style={{
-                color: '#000',
+                color: COLORS.black,
                 fontSize: 18,
                 fontWeight: '700',
               }}>
@@ -413,13 +436,13 @@ const HotelDetailScreen = () => {
 
             <Text
               style={{
-                color: '#000',
+                color: COLORS.black,
               }}>
-              176 Đường Bùi Viện, Quận 1, TP.Hồ Chí Minh, Việt Nam - 0,9 km từ
-              trung tâm -{' '}
+              {hotel?.address} - {(hotel?.distance).toFixed(2)} km từ trung tâm
+              -{' '}
               <Text
                 style={{
-                  color: '#058633',
+                  color: COLORS.green,
                 }}>
                 Địa điểm tuyệt vời
               </Text>
@@ -436,13 +459,13 @@ const HotelDetailScreen = () => {
           <View
             style={{
               gap: 16,
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingVertical: 16,
             }}>
             <Text
               style={{
-                color: '#000',
+                color: COLORS.black,
                 fontSize: 18,
                 fontWeight: '700',
               }}>
@@ -474,7 +497,7 @@ const HotelDetailScreen = () => {
               ))}
             </View>
 
-            <Text style={{fontWeight: '700', color: '#0165FC'}}>
+            <Text style={{fontWeight: '700', color: COLORS.primary}}>
               Xem tất cả các tiện nghi
             </Text>
           </View>
@@ -489,21 +512,21 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
             <View
               style={{
                 borderWidth: 1,
-                borderColor: '#E5E5E5',
+                borderColor: COLORS.borderGray,
                 borderRadius: 4,
                 padding: 16,
                 gap: 16,
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 18,
                   fontWeight: '700',
                 }}>
@@ -511,7 +534,7 @@ const HotelDetailScreen = () => {
               </Text>
 
               <View style={{gap: 10}}>
-                <Text style={{color: '#000'}}>
+                <Text style={{color: COLORS.black}}>
                   Khả dụng cho một số lựa chọn:
                 </Text>
 
@@ -519,7 +542,7 @@ const HotelDetailScreen = () => {
                   style={{
                     flexDirection: 'row',
                     gap: 10,
-                    borderBottomColor: '#E5E5E5',
+                    borderBottomColor: COLORS.borderGray,
                     borderBottomWidth: 1,
                     paddingBottom: 16,
                   }}>
@@ -527,10 +550,10 @@ const HotelDetailScreen = () => {
                     name="checkcircle"
                     library="AntDesign"
                     size={20}
-                    color="#FFB700"
+                    color={COLORS.yellowGold}
                   />
                   <View>
-                    <Text style={{color: '#000', fontWeight: '500'}}>
+                    <Text style={{color: COLORS.black, fontWeight: '500'}}>
                       Giảm giá 12%
                     </Text>
                     <Text style={{fontSize: 12}}>
@@ -577,7 +600,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -586,13 +609,13 @@ const HotelDetailScreen = () => {
                 flexDirection: 'row',
                 padding: 16,
                 borderWidth: 1,
-                borderColor: '#E5E5E5',
+                borderColor: COLORS.borderGray,
                 borderRadius: 4,
                 gap: 20,
               }}>
               <IconComponent
                 name="clockcircleo"
-                color="#058633"
+                color={COLORS.green}
                 library="AntDesign"
                 size={20}
               />
@@ -603,7 +626,7 @@ const HotelDetailScreen = () => {
                 }}>
                 <Text
                   style={{
-                    color: '#058633',
+                    color: COLORS.green,
                     fontSize: 16,
                     fontWeight: '700',
                   }}>
@@ -621,14 +644,18 @@ const HotelDetailScreen = () => {
                     justifyContent: 'center',
                     padding: 12,
                     alignSelf: 'flex-start',
-                    backgroundColor: '#fff',
+                    backgroundColor: COLORS.white,
                     borderWidth: 1,
-                    borderColor: '#0165FC',
+                    borderColor: COLORS.primary,
                     gap: 10,
                     borderRadius: 3,
                   }}>
                   <Text
-                    style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
+                    style={{
+                      color: COLORS.primary,
+                      fontSize: 16,
+                      fontWeight: '500',
+                    }}>
                     Đặt ngay
                   </Text>
                 </TouchableOpacity>
@@ -646,7 +673,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -656,7 +683,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 18,
                   fontWeight: '700',
                 }}>
@@ -670,7 +697,7 @@ const HotelDetailScreen = () => {
                 }}>
                 <View
                   style={{
-                    backgroundColor: '#003b95',
+                    backgroundColor: COLORS.primaryDarkBlack,
                     padding: 6,
                     borderRadius: 5,
                     borderBottomLeftRadius: 0,
@@ -678,7 +705,7 @@ const HotelDetailScreen = () => {
                   }}>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: COLORS.white,
                       fontSize: 16,
                     }}>
                     7.1
@@ -723,13 +750,13 @@ const HotelDetailScreen = () => {
                   alignItems: 'center',
                   gap: 10,
                 }}>
-                <Text style={{fontWeight: '700', color: '#0165FC'}}>
+                <Text style={{fontWeight: '700', color: COLORS.primary}}>
                   Xem thêm
                 </Text>
                 <IconComponent
                   name="unfold-more"
                   library="MaterialIcons"
-                  color="#0165FC"
+                  color={COLORS.primary}
                   size={20}
                 />
               </TouchableOpacity>
@@ -746,7 +773,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -771,7 +798,7 @@ const HotelDetailScreen = () => {
                   style={{
                     paddingBottom: 16,
                     borderBottomWidth: 1,
-                    borderColor: '#E5E5E5',
+                    borderColor: COLORS.borderGray,
                     gap: 10,
                   }}>
                   <View
@@ -820,7 +847,7 @@ const HotelDetailScreen = () => {
                         />
                         <Text
                           style={{
-                            color: '#000',
+                            color: COLORS.black,
                             fontWeight: '400',
                             fontSize: 12,
                           }}>
@@ -831,7 +858,7 @@ const HotelDetailScreen = () => {
                   </View>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       lineHeight: 22,
                       fontSize: 16,
                     }}>
@@ -843,7 +870,7 @@ const HotelDetailScreen = () => {
                   style={{
                     paddingBottom: 16,
                     borderBottomWidth: 1,
-                    borderColor: '#E5E5E5',
+                    borderColor: COLORS.borderGray,
                     gap: 10,
                   }}>
                   <View
@@ -871,7 +898,7 @@ const HotelDetailScreen = () => {
                       }}>
                       <Text
                         style={{
-                          color: '#000',
+                          color: COLORS.black,
                           fontWeight: '700',
                           fontSize: 13,
                         }}>
@@ -892,7 +919,7 @@ const HotelDetailScreen = () => {
                         />
                         <Text
                           style={{
-                            color: '#000',
+                            color: COLORS.black,
                             fontWeight: '400',
                             fontSize: 12,
                           }}>
@@ -903,7 +930,7 @@ const HotelDetailScreen = () => {
                   </View>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       lineHeight: 22,
                       fontSize: 16,
                     }}>
@@ -915,7 +942,7 @@ const HotelDetailScreen = () => {
                   style={{
                     paddingBottom: 16,
                     borderBottomWidth: 1,
-                    borderColor: '#E5E5E5',
+                    borderColor: COLORS.borderGray,
                     gap: 10,
                   }}>
                   <View
@@ -943,7 +970,7 @@ const HotelDetailScreen = () => {
                       }}>
                       <Text
                         style={{
-                          color: '#000',
+                          color: COLORS.black,
                           fontWeight: '700',
                           fontSize: 13,
                         }}>
@@ -964,7 +991,7 @@ const HotelDetailScreen = () => {
                         />
                         <Text
                           style={{
-                            color: '#000',
+                            color: COLORS.black,
                             fontWeight: '400',
                             fontSize: 12,
                           }}>
@@ -975,7 +1002,7 @@ const HotelDetailScreen = () => {
                   </View>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       lineHeight: 22,
                       fontSize: 16,
                     }}>
@@ -1015,7 +1042,7 @@ const HotelDetailScreen = () => {
                       }}>
                       <Text
                         style={{
-                          color: '#000',
+                          color: COLORS.black,
                           fontWeight: '700',
                           fontSize: 13,
                         }}>
@@ -1036,7 +1063,7 @@ const HotelDetailScreen = () => {
                         />
                         <Text
                           style={{
-                            color: '#000',
+                            color: COLORS.black,
                             fontWeight: '400',
                             fontSize: 12,
                           }}>
@@ -1047,7 +1074,7 @@ const HotelDetailScreen = () => {
                   </View>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       lineHeight: 22,
                       fontSize: 16,
                     }}>
@@ -1055,7 +1082,7 @@ const HotelDetailScreen = () => {
                     phía dưới ks có khá nhiều quán nổi tiếng thuận tiện
                   </Text>
 
-                  <Text style={{fontWeight: '700', color: '#0165FC'}}>
+                  <Text style={{fontWeight: '700', color: COLORS.primary}}>
                     Xem tất cả 102 đánh giá
                   </Text>
                 </View>
@@ -1073,7 +1100,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -1083,7 +1110,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 16,
                   fontWeight: '700',
                 }}>
@@ -1107,7 +1134,7 @@ const HotelDetailScreen = () => {
                   />
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       fontWeight: '500',
                     }}>
                     Can we check in now
@@ -1130,7 +1157,7 @@ const HotelDetailScreen = () => {
                   </Text>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                     }}>
                     Can we check in now
                   </Text>
@@ -1142,7 +1169,7 @@ const HotelDetailScreen = () => {
                   alignItems: 'center',
                   gap: 10,
                 }}>
-                <Text style={{fontWeight: '700', color: '#0165FC'}}>
+                <Text style={{fontWeight: '700', color: COLORS.primary}}>
                   Xem tất cả 4 câu hỏi
                 </Text>
               </TouchableOpacity>
@@ -1156,21 +1183,25 @@ const HotelDetailScreen = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 12,
-                    backgroundColor: '#fff',
+                    backgroundColor: COLORS.white,
                     borderWidth: 1,
-                    borderColor: '#0165FC',
+                    borderColor: COLORS.primary,
                     gap: 10,
                     borderRadius: 3,
                   }}>
                   <Text
-                    style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
+                    style={{
+                      color: COLORS.primary,
+                      fontSize: 16,
+                      fontWeight: '500',
+                    }}>
                     Đặt câu hỏi
                   </Text>
                 </TouchableOpacity>
                 <Text
                   style={{
                     textAlign: 'center',
-                    color: '#000',
+                    color: COLORS.black,
                     fontSize: 12,
                   }}>
                   Chỗ nghỉ này thường trả lời trong vòng vài ngày
@@ -1189,7 +1220,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -1199,7 +1230,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 18,
                   fontWeight: '700',
                 }}>
@@ -1213,7 +1244,7 @@ const HotelDetailScreen = () => {
                 <Text
                   style={{
                     fontSize: 16,
-                    color: '#000',
+                    color: COLORS.black,
                     lineHeight: 22,
                   }}>
                   Nằm ở Đà Lạt, cách Vườn hoa Đà Lạt 2.8 km, Akama Boutique Đà
@@ -1229,7 +1260,11 @@ const HotelDetailScreen = () => {
                   gap: 10,
                 }}>
                 <Text
-                  style={{fontWeight: '600', fontSize: 16, color: '#0165FC'}}>
+                  style={{
+                    fontWeight: '600',
+                    fontSize: 16,
+                    color: COLORS.primary,
+                  }}>
                   Đọc miêu tả đầy đủ
                 </Text>
               </TouchableOpacity>
@@ -1246,7 +1281,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -1256,7 +1291,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 20,
                   fontWeight: '700',
                 }}>
@@ -1269,13 +1304,13 @@ const HotelDetailScreen = () => {
                 <View>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                     }}>
                     Nhận phòng từ 14:00 đến 23:00
                   </Text>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                     }}>
                     Trả phòng từ 08:00 đến 12:00
                   </Text>
@@ -1289,19 +1324,19 @@ const HotelDetailScreen = () => {
                     }}>
                     <Text
                       style={{
-                        backgroundColor: '#058633',
+                        backgroundColor: COLORS.green,
                         paddingHorizontal: 5,
                         paddingVertical: 2,
                         borderRadius: 4,
                         alignSelf: 'flex-start',
-                        color: '#fff',
+                        color: COLORS.white,
                         fontSize: 12,
                       }}>
                       Miễn phí
                     </Text>
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                       }}>
                       Wifi có ở toàn bộ khách sạn và miễn phí
                     </Text>
@@ -1314,19 +1349,19 @@ const HotelDetailScreen = () => {
                     }}>
                     <Text
                       style={{
-                        backgroundColor: '#058633',
+                        backgroundColor: COLORS.green,
                         paddingHorizontal: 5,
                         paddingVertical: 2,
                         borderRadius: 4,
                         alignSelf: 'flex-start',
-                        color: '#fff',
+                        color: COLORS.white,
                         fontSize: 12,
                       }}>
                       Miễn phí
                     </Text>
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                         flex: 1,
                       }}>
                       Có chỗ đỗ xe riêng miễn phí tại chỗ (không cần đặt chộ
@@ -1341,7 +1376,7 @@ const HotelDetailScreen = () => {
                     }}>
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                         flex: 1,
                       }}>
                       Không phí đặt phòng hoặc phí thẻ tín dụng
@@ -1357,7 +1392,11 @@ const HotelDetailScreen = () => {
                   alignSelf: 'flex-start',
                 }}>
                 <Text
-                  style={{fontWeight: '600', fontSize: 16, color: '#0165FC'}}>
+                  style={{
+                    fontWeight: '600',
+                    fontSize: 16,
+                    color: COLORS.primary,
+                  }}>
                   Xem chính sách chỗ nghỉ
                 </Text>
               </TouchableOpacity>
@@ -1374,7 +1413,7 @@ const HotelDetailScreen = () => {
           }>
           <View
             style={{
-              borderTopColor: '#E5E5E5',
+              borderTopColor: COLORS.borderGray,
               borderTopWidth: 1,
               paddingTop: 16,
             }}>
@@ -1384,7 +1423,7 @@ const HotelDetailScreen = () => {
               }}>
               <Text
                 style={{
-                  color: '#000',
+                  color: COLORS.black,
                   fontSize: 20,
                   fontWeight: '700',
                 }}>
@@ -1397,13 +1436,13 @@ const HotelDetailScreen = () => {
                 <View style={{gap: 5}}>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                     }}>
                     Phù hợp cho tất cả trẻ em.
                   </Text>
                   <Text
                     style={{
-                      color: '#000',
+                      color: COLORS.black,
                       fontWeight: '600',
                       lineHeight: 18,
                     }}>
@@ -1421,7 +1460,11 @@ const HotelDetailScreen = () => {
                   alignSelf: 'flex-start',
                 }}>
                 <Text
-                  style={{fontWeight: '600', fontSize: 16, color: '#0165FC'}}>
+                  style={{
+                    fontWeight: '600',
+                    fontSize: 16,
+                    color: COLORS.primary,
+                  }}>
                   Xem toàn bộ chính sách
                 </Text>
               </TouchableOpacity>
@@ -1431,30 +1474,37 @@ const HotelDetailScreen = () => {
       </ScrollView>
       <View
         style={{
-          backgroundColor: '#fff',
+          backgroundColor: COLORS.white,
           padding: 16,
           // Shadow properties
-          shadowColor: '#000', // Màu của shadow
+          shadowColor: COLORS.black, // Màu của shadow
           shadowOffset: {width: 0, height: -5}, // Đổ bóng phía trên (height âm)
           shadowOpacity: 0.2, // Độ trong suốt của shadow
           shadowRadius: 3, // Độ mờ của shadow
           elevation: 10, // Hỗ trợ shadow trên Android
         }}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 12,
-            backgroundColor: '#0165FC',
-            width: '100%',
-            gap: 10,
-            borderRadius: 3,
+        <Pressable
+          style={({pressed}) => [
+            {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 12,
+              backgroundColor: pressed ? COLORS.primaryLight : COLORS.primary,
+              width: '100%',
+              gap: 10,
+              borderRadius: 3,
+            },
+          ]}
+          onPress={() => {
+            navigation.navigate('RoomList', {
+              hotel,
+            });
           }}>
-          <Text style={{color: '#fff', fontSize: 16, fontWeight: '500'}}>
+          <Text style={{color: COLORS.white, fontSize: 16, fontWeight: '500'}}>
             Chọn phòng
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );
@@ -1483,12 +1533,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: COLORS.opacityDark,
     justifyContent: 'center',
     alignItems: 'center',
   },
   overlayText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 20,
     fontWeight: 'bold',
   },

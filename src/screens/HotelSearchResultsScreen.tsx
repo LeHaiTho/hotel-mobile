@@ -1,64 +1,175 @@
 import {
   FlatList,
   Image,
+  Pressable,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import IconComponent from '@components/IconComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import axios from 'axios';
+import {API_URL} from '../utils/constants';
 
-const HotelSearchResultsScreen = () => {
+import {formatDate} from '@utils/constants';
+import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {COLORS} from '@styles/colors';
+const HotelSearchResultsScreen = ({route}: any) => {
+  const {searchCondition} = route?.params || {};
+  const [hotelResults, setHotelResults] = useState<any[]>([]);
+  console.log('searchCondition', searchCondition);
+
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  useEffect(() => {
+    const getHotels = async () => {
+      // const queryString = new URLSearchParams(searchCondition).toString();
+      const params = {
+        checkInDate: searchCondition.checkInDate,
+        checkOutDate: searchCondition.checkOutDate,
+        longitude: searchCondition.location.longitude,
+        latitude: searchCondition.location.latitude,
+        adults: searchCondition.capacity.adults,
+        children: searchCondition.capacity.children,
+      };
+
+      try {
+        console.log(
+          `${API_URL}/hotel-properties/searchresults`,
+          `${API_URL}/hotel-properties/searchresults`,
+        );
+        const response = await axios.get(
+          `${API_URL}/hotel-properties/searchresults`,
+          {
+            params,
+          },
+        );
+        setHotelResults(response?.data);
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+    getHotels();
+  }, []);
+
+  const handlePressHotel = (hotel: any) => {
+    const data = {
+      id: hotel?.id,
+      ...searchCondition,
+      name: hotel?.name,
+      address: hotel?.address,
+      images: hotel?.images,
+      distance: hotel?.distance,
+    };
+    navigation.push('HotelDetail', {
+      hotel: data,
+    });
+  };
+
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <View style={{flex: 1, backgroundColor: COLORS.white}}>
       {/* Header + button search */}
-      <StatusBar barStyle="light-content" backgroundColor="#003b95" />
-      <View style={{paddingHorizontal: 16, backgroundColor: '#003b95'}}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 16,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderWidth: 4,
-            borderColor: '#FFB700',
-            borderRadius: 10,
-            backgroundColor: '#fff',
-          }}>
-          <IconComponent
-            name="arrow-left"
-            library="MaterialCommunityIcons"
-            size={24}
-            color="#000"
-          />
-          <Text style={{color: '#000', flex: 1}}>
-            Tp.Hồ Chính Minh 31 thg 1 - 3 thg 2
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={COLORS.primaryDark}
+      />
+      <View
+        style={{
+          paddingHorizontal: 16,
+          backgroundColor: COLORS.primaryDark,
+          gap: 20,
+        }}>
+        {/* Search Bar - Đặt trồi lên trên */}
+
+        <Pressable
+          style={({pressed}) => [
+            {
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 16,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              borderWidth: 4,
+              borderColor: COLORS.yellowGold,
+              borderRadius: 10,
+              backgroundColor: pressed ? COLORS.grayLight : COLORS.white, // Hiệu ứng nhấn nhẹ
+              shadowColor: COLORS.black,
+              shadowOffset: {width: 0, height: 2},
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              transform: [{translateY: 25}],
+              zIndex: 2,
+              position: 'relative',
+            },
+          ]}
+          onPress={() => console.log('Pressed!')}>
+          <Pressable
+            style={({pressed}) => [
+              {flexDirection: 'row', alignItems: 'center', gap: 5},
+              {
+                backgroundColor: pressed ? COLORS.opacity : COLORS.white,
+                padding: 5,
+                borderRadius: 50,
+              },
+            ]}
+            onPress={() => navigation.goBack()}>
+            <IconComponent
+              name="arrow-left"
+              library="MaterialCommunityIcons"
+              size={24}
+              color={COLORS.black}
+            />
+          </Pressable>
+          <Text style={{color: COLORS.black, flex: 1}}>
+            {`Xung quanh vị trí hiện tại · ${formatDate(
+              searchCondition.checkInDate,
+            )} - ${formatDate(searchCondition.checkOutDate)}`}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
+      </View>
+      {/* Thanh filter phía dưới */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: COLORS.white,
+          shadowColor: COLORS.black,
+          shadowOffset: {width: 0, height: 2},
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+          zIndex: -1,
+        }}>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 10,
-            justifyContent: 'space-between',
-            shadowColor: '#000',
-            shadowOffset: {width: 0, height: 2},
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            backgroundColor: '#fff',
-            marginHorizontal: -16,
-            paddingHorizontal: 16,
-            paddingVertical: 12,
-            zIndex: 1,
+            gap: 20,
+            justifyContent: 'space-around',
+            flex: 1,
+            marginTop: 30,
           }}>
-          <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+          <Pressable
+            style={({pressed}) => [
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 5,
+                flex: 1,
+                backgroundColor: pressed ? COLORS.opacity : COLORS.white, // Hiệu ứng nhấn nhẹ
+                paddingVertical: 12,
+              },
+            ]}
+            onPress={() => console.log('Pressed!')}>
             <IconComponent
               name="filter"
               library="MaterialCommunityIcons"
@@ -66,9 +177,20 @@ const HotelSearchResultsScreen = () => {
               color="#000"
             />
             <Text>Sắp xếp</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+          </Pressable>
+          <Pressable
+            style={({pressed}) => [
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                gap: 5,
+                paddingVertical: 12,
+                backgroundColor: pressed ? COLORS.opacity : COLORS.white, // Hiệu ứng nhấn nhẹ
+              },
+            ]}
+            onPress={() => console.log('Pressed!')}>
             <IconComponent
               name="filter"
               library="MaterialCommunityIcons"
@@ -76,9 +198,20 @@ const HotelSearchResultsScreen = () => {
               color="#000"
             />
             <Text>Sắp xếp</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+          </Pressable>
+          <Pressable
+            style={({pressed}) => [
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 5,
+                flex: 1,
+                paddingVertical: 12,
+                backgroundColor: pressed ? COLORS.opacity : COLORS.white, // Hiệu ứng nhấn nhẹ
+              },
+            ]}
+            onPress={() => console.log('Pressed!')}>
             <IconComponent
               name="map-outline"
               library="Ionicons"
@@ -86,31 +219,40 @@ const HotelSearchResultsScreen = () => {
               color="#000"
             />
             <Text>Sắp xếp</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
+
       <View style={{flex: 1}}>
         <FlatList
-          contentContainerStyle={{paddingHorizontal: 16, gap: 10}}
-          data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+          contentContainerStyle={{}}
+          showsVerticalScrollIndicator={false}
+          data={hotelResults}
           ListHeaderComponent={() => (
             <Text style={{color: '#000', paddingTop: 10}}>2574 chỗ nghỉ</Text>
           )}
-          renderItem={() => (
-            <View style={{}}>
-              <TouchableOpacity
-                onPress={() => console.log('Pressed')}
-                style={{
-                  backgroundColor: '#fff',
-                  width: '100%',
-                  height: 'auto',
-                  borderRadius: 8,
-                  gap: 12,
-                  flexDirection: 'row',
-                }}>
+          renderItem={({item}) => (
+            <>
+              <Pressable
+                key={item?.id}
+                onPress={() => handlePressHotel(item)}
+                style={({pressed}) => [
+                  {
+                    backgroundColor: pressed ? COLORS.opacity : COLORS.white,
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: pressed ? 0 : 8,
+                    gap: 12,
+                    flexDirection: 'row',
+                    paddingHorizontal: 16,
+                    paddingVertical: 10,
+                  },
+                ]}>
                 <Image
                   source={{
-                    uri: 'https://www.huonggianghotel.com.vn/wp-content/uploads/2018/06/DSC_4211-HDR2_1600x1068-1.jpg',
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${
+                      item?.id
+                    }/${item?.images?.split(',')[0]}`,
                   }}
                   style={{
                     width: 100,
@@ -140,14 +282,14 @@ const HotelSearchResultsScreen = () => {
                         flex: 1,
                       }}
                       numberOfLines={2}>
-                      KT MERAKI BOUTIQUE - Bui vien walking street
+                      {item.name}
                     </Text>
                     <TouchableOpacity style={{paddingHorizontal: 5}}>
                       <IconComponent
                         name="heart-o"
                         library="FontAwesome"
                         size={18}
-                        color="#000"
+                        color={COLORS.black}
                       />
                     </TouchableOpacity>
                   </View>
@@ -159,7 +301,7 @@ const HotelSearchResultsScreen = () => {
                     }}>
                     <View
                       style={{
-                        backgroundColor: '#003b95',
+                        backgroundColor: COLORS.primaryDark,
                         padding: 4,
                         borderRadius: 4,
                         borderBottomLeftRadius: 0,
@@ -167,7 +309,7 @@ const HotelSearchResultsScreen = () => {
                       }}>
                       <Text
                         style={{
-                          color: '#fff',
+                          color: COLORS.white,
                           fontSize: 12,
                         }}>
                         7.1
@@ -175,16 +317,16 @@ const HotelSearchResultsScreen = () => {
                     </View>
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                       }}>
                       Tốt{' '}
                       <IconComponent
                         name="dot-single"
                         library="Entypo"
                         size={10}
-                        color="#000"
+                        color={COLORS.black}
                       />
-                      <Text style={{color: 'gray', fontSize: 13}}>
+                      <Text style={{color: COLORS.gray, fontSize: 13}}>
                         100 đánh giá
                       </Text>
                     </Text>
@@ -195,25 +337,25 @@ const HotelSearchResultsScreen = () => {
                       alignItems: 'center',
                       gap: 5,
                     }}>
-                    <EvilIcons name="location" size={20} color="#000" />
+                    <EvilIcons name="location" size={20} color={COLORS.black} />
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                         fontSize: 12,
                       }}>
-                      Quận 1{' '}
-                      <IconComponent
+                      {`cách bạn ${Number(item?.distance?.toFixed(2))} km`}
+                      {/* <IconComponent
                         name="dot-single"
                         library="Entypo"
                         size={10}
                         color="#000"
                       />{' '}
-                      <Text style={{fontSize: 12}}>cách trung tâm 100 m</Text>
+                      <Text style={{fontSize: 12}}>cách trung tâm 100 m</Text> */}
                     </Text>
                   </View>
                   <View
                     style={{
-                      backgroundColor: '#008234',
+                      backgroundColor: COLORS.green,
                       alignSelf: 'flex-start',
                       paddingHorizontal: 5,
                       paddingVertical: 3,
@@ -222,7 +364,7 @@ const HotelSearchResultsScreen = () => {
                     <Text
                       style={{
                         fontSize: 12,
-                        color: '#fff',
+                        color: COLORS.white,
                       }}>
                       Ưu Đãi Đầu Năm 2025
                     </Text>
@@ -230,11 +372,16 @@ const HotelSearchResultsScreen = () => {
                   <View style={{}}>
                     <Text
                       style={{
-                        color: '#000',
+                        color: COLORS.black,
                         fontWeight: '600',
                         textAlign: 'right',
                       }}>
-                      Giá cho 2 đêm, 2 người lớn
+                      Giá cho{' '}
+                      {moment(searchCondition.checkOutDate).diff(
+                        moment(searchCondition.checkInDate),
+                        'days',
+                      )}{' '}
+                      đêm, {searchCondition.capacity.adults} người lớn
                     </Text>
                     <View
                       style={{
@@ -245,20 +392,22 @@ const HotelSearchResultsScreen = () => {
                       }}>
                       <Text
                         style={{
-                          color: '#f20000',
+                          color: COLORS.red,
                           textDecorationLine: 'line-through',
                           textAlign: 'right',
                         }}>
-                        VNĐ 3.000.000
+                        {`VNĐ ${Math.round(
+                          item?.Rooms?.[0]?.sotien / 0.6,
+                        ).toLocaleString()}`}
                       </Text>
                       <Text
                         style={{
-                          color: '#000',
+                          color: COLORS.black,
                           fontWeight: '700',
                           fontSize: 19,
                           textAlign: 'right',
                         }}>
-                        VNĐ 1.350.000
+                        VNĐ {item?.Rooms?.[0]?.sotien.toLocaleString()}
                       </Text>
                     </View>
                     <Text
@@ -278,12 +427,12 @@ const HotelSearchResultsScreen = () => {
                       <MaterialCommunityIcons
                         name="check"
                         size={14}
-                        color="#008234"
+                        color={COLORS.green}
                       />
                       <Text
                         style={{
                           fontWeight: '700',
-                          color: '#008234',
+                          color: COLORS.green,
                           fontSize: 13,
                         }}>
                         Hủy miễn phí
@@ -299,12 +448,12 @@ const HotelSearchResultsScreen = () => {
                       <MaterialCommunityIcons
                         name="check"
                         size={14}
-                        color="#008234"
+                        color={COLORS.green}
                       />
                       <Text
                         style={{
                           fontWeight: '700',
-                          color: '#008234',
+                          color: COLORS.green,
                           fontSize: 13,
                         }}>
                         Không cần thanh toán trước
@@ -312,16 +461,15 @@ const HotelSearchResultsScreen = () => {
                     </View>
                   </View>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
               <View
                 style={{
                   height: 1,
-                  backgroundColor: '#ccc',
-                  marginTop: 10,
+                  backgroundColor: COLORS.borderGray,
                   marginHorizontal: -16,
                 }}
               />
-            </View>
+            </>
           )}
         />
       </View>
@@ -330,5 +478,3 @@ const HotelSearchResultsScreen = () => {
 };
 
 export default HotelSearchResultsScreen;
-
-const styles = StyleSheet.create({});

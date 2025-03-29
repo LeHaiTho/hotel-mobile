@@ -3,8 +3,13 @@ import React from 'react';
 import IconComponent from '@components/IconComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {RouteProp, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useRoute} from '@react-navigation/native';
 
 const BookingConfirmationScreen = () => {
+  const route = useRoute<RouteProp<any>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   return (
     <ScrollView
       contentContainerStyle={{
@@ -150,7 +155,8 @@ const BookingConfirmationScreen = () => {
                 fontSize: 16,
                 fontWeight: '500',
                 textAlign: 'center',
-              }}>
+              }}
+              onPress={() => navigation.navigate('ReservationDetail')}>
               Xem hoặc cập nhật chi tiết
             </Text>
           </TouchableOpacity>

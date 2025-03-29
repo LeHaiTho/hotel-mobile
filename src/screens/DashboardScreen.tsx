@@ -177,7 +177,7 @@ const DashboardScreen = () => {
       // await auth().signOut();
       await GoogleSignin.signOut();
       await logout();
-      navigation.replace('Login');
+      // await navigation.replace('Account');
     } catch (error: any) {
       console.log(error);
     }

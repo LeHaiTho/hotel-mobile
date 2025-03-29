@@ -11,6 +11,9 @@ import ModalComponent from './ModalComponent';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {formatDate} from '@utils/constants';
+import {useRoute} from '@react-navigation/native';
+import axios from 'axios';
+import {API_URL} from '../utils/constants';
 
 // Khai báo các constants
 const COLORS = {
@@ -18,50 +21,143 @@ const COLORS = {
   secondary: '#0165FF',
   white: '#FFFFFF',
   black: '#000000',
+  gray: '#808080',
+};
+type location = {
+  address?: string;
+  latitude?: string;
+  longitude?: string;
 };
 
-const SearchComponent = () => {
+type SearchComponentProps = {
+  location?: location;
+};
+
+type initialSearchCondition = {
+  checkInDate?: string;
+  checkOutDate?: string;
+  location?: location;
+  capacity?: {
+    adults?: number;
+    children?: number;
+  };
+};
+
+const SearchComponent = (location: SearchComponentProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [modalVisible, setModalVisible] = useState(false);
-  const [location, setLocation] = useState('');
-  const [checkInDate, setCheckInDate] = useState<string>('');
-  const [checkOutDate, setCheckOutDate] = useState<string>('');
+  // const [locationText, setLocationText] = useState(location?.address || '');
+  // const [checkInDate, setCheckInDate] = useState<string>('');
+  // const [checkOutDate, setCheckOutDate] = useState<string>('');
+  const [searchCondition, setSearchCondition] =
+    useState<initialSearchCondition>({
+      checkInDate: '',
+      checkOutDate: '',
+      location: location?.location,
+      capacity: {
+        adults: 2,
+        children: 0,
+      },
+    });
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const getAvailableCheckInDate = (): string => {
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    const checkInLimit = 11 * 60 + 45;
-    // Kiểm tra nếu đã quá giờ check-in (11:45)
-    if (currentMinutes >= checkInLimit) {
-      now.setDate(now.getDate() + 1);
-    }
-    return now.toISOString().split('T')[0];
-  };
+  // const getAvailableCheckInDate = (): string => {
+  //   const now = new Date();
+  //   const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  //   console.log('currentMinutes', currentMinutes);
+  //   const checkInLimit = 11 * 60 + 45;
+  //   console.log('checkInLimit', checkInLimit);
+  //   // Kiểm tra nếu đã quá giờ check-in (11:45)
+  //   if (currentMinutes >= checkInLimit) {
+  //     now.setDate(now.getDate() + 1);
+  //   }
+  //   return now.toLocaleDateString('en-CA').split('/').join('-');
+  // };
+  // console.log('getAvailableCheckInDate', getAvailableCheckInDate());
+  // console.log('location', location);
 
   const getDefaultCheckOutDate = (checkInDateStr: string): string => {
     const checkIn = new Date(checkInDateStr);
     // Mặc định checkout sau 1 ngày
     checkIn.setDate(checkIn.getDate() + 1);
-    return checkIn.toISOString().split('T')[0];
+    return checkIn.toLocaleDateString('en-CA').split('/').join('-');
   };
 
   useEffect(() => {
     // Khởi tạo các giá trị mặc định
-    const initialCheckInDate = getAvailableCheckInDate();
-    console.log('initialCheckInDate', initialCheckInDate);
-    setLocation('hello');
-    setCheckInDate(initialCheckInDate);
-    setCheckOutDate(getDefaultCheckOutDate(initialCheckInDate));
+    // const initialCheckInDate = getAvailableCheckInDate();
+    const initialCheckInDate = new Date()
+      .toLocaleDateString('en-CA')
+      .split('/')
+      .join('-');
+    setSearchCondition(prev => ({
+      ...prev,
+      checkInDate: initialCheckInDate,
+      checkOutDate: getDefaultCheckOutDate(initialCheckInDate),
+    }));
   }, []);
 
-  const handleSearch = () => {
-    if (location) {
-      navigation.navigate('SearchLocation');
-    } else {
-      openModal();
+  // console.log('searchCondition', searchCondition);
+  // console.log('checkInDate', searchCondition.checkInDate);
+  // console.log('checkOutDate', searchCondition.checkOutDate);
+  // lấy vị trí hiện tại hoặc điền vào input
+  const handleLocation = () => {
+    navigation.replace('SearchLocation', {
+      location,
+    });
+  };
+
+  // const handleSendRequest = async () => {
+  //   try {
+  //     const params = {
+  //       location: searchCondition.location?.address,
+  //       lat: searchCondition.location?.latitude,
+  //       lon: searchCondition.location?.longitude,
+  //       checkInDate: searchCondition.checkInDate,
+  //       checkOutDate: searchCondition.checkOutDate,
+  //       adults: searchCondition.capacity?.adults,
+  //       children: searchCondition.capacity?.children,
+  //     };
+  //     console.log('params', params);
+
+  //     // Xóa key có giá trị undefined
+  //     const filteredParams = Object.fromEntries(
+  //       Object.entries(params).filter(([_, v]) => v !== undefined),
+  //     );
+  //     console.log('filteredParams', filteredParams);
+
+  //     // Tạo query string
+  //     const queryString = new URLSearchParams(filteredParams as any).toString();
+  //     console.log(queryString);
+  //     const response = await axios.get(
+  //       `${API_URL}/hotel-properties/searchresults?${queryString}`,
+  //     );
+  //     const data = response.data;
+  //     console.log('data', data);
+  //   } catch (error) {
+  //     console.log('errord', error);
+  //   }
+  // };
+
+  const handleSearch = async () => {
+    try {
+      if (searchCondition?.location?.address) {
+        // console.log('searchCondition', searchCondition);
+        // navigation.push('HotelSearchResults', {
+        //   searchCondition,
+        // });
+        // format url
+        // await handleSendRequest();
+        navigation.navigate('HotelSearchResults', {
+          searchCondition,
+        });
+      } else {
+        openModal();
+      }
+    } catch (error) {
+      console.log('error', error);
     }
   };
 
@@ -71,31 +167,51 @@ const SearchComponent = () => {
         <Pressable
           style={({pressed}) => [
             styles.inputRow,
-            pressed && styles.pressedState,
-          ]}>
+            {
+              backgroundColor: pressed ? '#f5f5f5' : COLORS.white,
+            },
+          ]}
+          onPress={handleLocation}>
           <AntDesign name="search1" size={24} color={COLORS.black} />
-          <Text style={styles.inputText}>{location}</Text>
+          {searchCondition?.location?.address ? (
+            <Text style={styles.inputText}>
+              {searchCondition?.location?.address}
+            </Text>
+          ) : (
+            <Text style={styles.inputTextPlaceholder}>
+              Nhập điểm đến của bạn
+            </Text>
+          )}
         </Pressable>
 
         <Pressable
           style={({pressed}) => [
             styles.inputRow,
-            pressed && styles.pressedState,
+            {
+              backgroundColor: pressed ? '#f5f5f5' : COLORS.white,
+            },
           ]}>
           <AntDesign name="calendar" size={24} color={COLORS.black} />
           <Text style={styles.inputText}>
-            {formatDate(checkInDate)} - {formatDate(checkOutDate)}
+            {searchCondition?.checkInDate &&
+              searchCondition?.checkOutDate &&
+              formatDate(searchCondition?.checkInDate, true) +
+                ' - ' +
+                formatDate(searchCondition?.checkOutDate, true)}
           </Text>
         </Pressable>
 
         <Pressable
           style={({pressed}) => [
             styles.inputRow,
-            pressed && styles.pressedState,
+            {
+              backgroundColor: pressed ? '#f5f5f5' : COLORS.white,
+            },
           ]}>
           <AntDesign name="user" size={24} color={COLORS.black} />
           <Text style={styles.inputText}>
-            1 phòng - <Text>2 người lớn</Text> - <Text>0 trẻ em</Text>
+            1 phòng - <Text>{searchCondition.capacity?.adults} người lớn</Text>{' '}
+            - <Text>{searchCondition.capacity?.children} trẻ em</Text>
           </Text>
         </Pressable>
 
@@ -148,8 +264,12 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   inputText: {
-    paddingVertical: 14,
+    paddingVertical: 12,
     color: COLORS.black,
+  },
+  inputTextPlaceholder: {
+    color: COLORS.gray,
+    paddingVertical: 12,
   },
   searchButton: {
     backgroundColor: COLORS.secondary,

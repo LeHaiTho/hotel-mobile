@@ -14,6 +14,7 @@ interface ModalProps {
   children: React.ReactNode;
   containerStyle?: ViewStyle;
   overlayStyle?: ViewStyle;
+  touchable?: boolean;
 }
 const ModalComponent = ({
   modalVisible,
@@ -21,13 +22,14 @@ const ModalComponent = ({
   children,
   containerStyle,
   overlayStyle,
+  touchable = true,
 }: ModalProps) => {
   return (
     <Modal
       visible={modalVisible}
       transparent={true}
       onRequestClose={closeModal}>
-      <TouchableWithoutFeedback onPress={closeModal}>
+      <TouchableWithoutFeedback onPress={touchable ? closeModal : () => {}}>
         <View
           style={[
             {

@@ -10,11 +10,28 @@ import React from 'react';
 import {IconComponent} from '@components/index';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import useInfoBookingStore from '@stores/InfoBookingStore';
+import {formatDate} from '@utils/constants';
+import moment from 'moment';
 
-const BookingDetailScreen = () => {
+const BookingDetailScreen = ({route}: any) => {
+  const {hotel} = route.params || {};
+  console.log('hotel', hotel);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const {formData} = useInfoBookingStore();
+  const handleBooking = () => {
+    navigation.navigate('BookingConfirmation');
+  };
   return (
     <>
-      <ScrollView contentContainerStyle={{padding: 16}}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 16,
+          backgroundColor: '#fff',
+          gap: 16,
+        }}>
         {/* không cần thẻ tín dụng */}
         <View
           style={
@@ -70,6 +87,7 @@ const BookingDetailScreen = () => {
             borderWidth: 1,
             borderColor: '#E5E5E5',
             borderRadius: 8,
+            gap: 10,
           }}>
           <View style={{flexDirection: 'row'}}>
             <Text
@@ -79,7 +97,7 @@ const BookingDetailScreen = () => {
                 fontWeight: '700',
                 flex: 1,
               }}>
-              The Sóng 5 Start Apartment - Tokyo Homestay
+              {hotel?.name}
             </Text>
             <View
               style={{
@@ -124,7 +142,7 @@ const BookingDetailScreen = () => {
             />
           </View>
           <Text style={{color: '#000', fontWeight: '400'}} numberOfLines={2}>
-            28 Đường Thi Sách, 790000 Vũng Tàu, Việt Nam
+            {hotel?.address}
           </Text>
           <View style={{flexDirection: 'row', gap: 5}}>
             <Text
@@ -160,8 +178,10 @@ const BookingDetailScreen = () => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             {/* Nhận phòng */}
             <View>
-              <Text>Nhận phòng</Text>
-              <Text>Th 3, 11 thg 2, 2025</Text>
+              <Text style={{color: '#000', fontWeight: '500'}}>Nhận phòng</Text>
+              <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                {formatDate(hotel?.checkInDate, true)}
+              </Text>
             </View>
 
             {/* Trả phòng */}
@@ -171,9 +191,11 @@ const BookingDetailScreen = () => {
                 borderLeftWidth: 1,
                 borderColor: '#E5E5E5',
               }}>
-              <Text>Trả phòng</Text>
+              <Text style={{color: '#000', fontWeight: '500'}}>Trả phòng</Text>
 
-              <Text>Th 3, 11 thg 2, 2025</Text>
+              <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                {formatDate(hotel?.checkOutDate, true)}
+              </Text>
             </View>
           </View>
           <View
@@ -184,8 +206,13 @@ const BookingDetailScreen = () => {
             }}
           />
           <View>
-            <Text>Bạn đã chọn</Text>
-            <Text>1 đêm, 1 căn hộ cho 2 người lớn</Text>
+            <Text style={{color: '#000', fontWeight: '500'}}>Bạn đã chọn</Text>
+            <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+              {`${moment(hotel?.checkOutDate).diff(
+                moment(hotel?.checkInDate),
+                'days',
+              )} đêm, 1 căn hộ cho 2 người lớn`}
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -227,35 +254,54 @@ const BookingDetailScreen = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            <Text>Giá</Text>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: '500'}}>
+              Giá
+            </Text>
             <View
               style={{
                 flexDirection: 'row',
                 gap: 5,
+                alignItems: 'center',
               }}>
-              <Text>VND 1.183.000</Text>
+              <Text
+                style={{color: '#f20000', textDecorationLine: 'line-through'}}>
+                VND 1.183.000
+              </Text>
               <View
                 style={{
                   flexDirection: 'column',
                 }}>
-                <Text> VND 683.000</Text>
-                <Text>Đã bao gồm thuế và phí</Text>
+                <Text style={{color: '#000', fontSize: 20, fontWeight: '700'}}>
+                  VND 683.000
+                </Text>
+                <Text style={{color: '#000', fontSize: 12}}>
+                  Đã bao gồm thuế và phí
+                </Text>
               </View>
             </View>
           </View>
         </View>
-        <View>
-          <Text>Điểm nổi bật</Text>
-          <View style={{flexDirection: 'row', gap: 5}}>
+        <View
+          style={{
+            gap: 16,
+          }}>
+          <Text style={{color: '#000', fontSize: 20, fontWeight: '700'}}>
+            Điểm nổi bật
+          </Text>
+          <View style={{flexDirection: 'row', gap: 10}}>
             <IconComponent
-              name="star"
-              color="#FFB700"
-              library="AntDesign"
-              size={20}
+              name="sparkles-outline"
+              color="#008234"
+              library="Ionicons"
+              size={24}
             />
-            <View style={{flexDirection: 'column'}}>
-              <Text>Phòng có không gian rộng, thoáng mát</Text>
-              <Text>Dựa trên 2 đánh giá</Text>
+            <View style={{flexDirection: 'column', gap: 5}}>
+              <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                Phòng có không gian rộng, thoáng mát
+              </Text>
+              <Text style={{color: '#000', fontSize: 12}}>
+                Dựa trên 2 đánh giá
+              </Text>
             </View>
           </View>
           <View
@@ -266,30 +312,49 @@ const BookingDetailScreen = () => {
             }}
           />
           {/* Chính sách hủy */}
-          <View>
-            <Text>Chính sách hủy</Text>
-            <View>
+          <View style={{gap: 16}}>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: '700'}}>
+              Chính sách hủy
+            </Text>
+            <View style={{gap: 10}}>
               <View style={{flexDirection: 'row', gap: 5}}>
                 <IconComponent
-                  name="close"
-                  color="#000"
-                  library="MaterialCommunityIcons"
+                  name="check"
+                  color="#008234"
+                  library="AntDesign"
                   size={20}
                 />
-                <Text>Hủy miễn phí trước 18:00 ngày 11 thg 2, 2025</Text>
+                <Text style={{color: '#008234', fontWeight: '700'}}>
+                  Hủy miễn phí{' '}
+                  <Text style={{fontWeight: 'normal'}}>
+                    trước 18:00 ngày 11 thg 2, 2025
+                  </Text>
+                </Text>
               </View>
               <View style={{flexDirection: 'row', gap: 5}}>
                 <IconComponent
-                  name="close"
-                  color="#000"
-                  library="MaterialCommunityIcons"
+                  name="check"
+                  color="#008234"
+                  library="AntDesign"
                   size={20}
                 />
-                <Text>Hủy miễn phí trước 18:00 ngày 11 thg 2, 2025</Text>
+                <Text style={{color: '#008234', fontWeight: '700'}}>
+                  Không cần thanh toán{' '}
+                  <Text style={{fontWeight: 'normal'}}>
+                    thanh toán tại chỗ nghỉ
+                  </Text>
+                </Text>
               </View>
             </View>
-            <TouchableOpacity>
-              <Text>Điều kiện đặt phòng</Text>
+            <TouchableOpacity style={{}}>
+              <Text
+                style={{
+                  color: '#0165FC',
+                  fontWeight: '700',
+                  fontSize: 16,
+                }}>
+                Điều kiện đặt phòng
+              </Text>
             </TouchableOpacity>
           </View>
           <View
@@ -419,7 +484,8 @@ const BookingDetailScreen = () => {
             width: '100%',
             gap: 10,
             borderRadius: 3,
-          }}>
+          }}
+          onPress={handleBooking}>
           <Text style={{color: '#fff', fontSize: 16, fontWeight: '500'}}>
             Đặt ngay
           </Text>
