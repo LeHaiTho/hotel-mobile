@@ -10,7 +10,11 @@ import {
   View,
   Alert,
 } from 'react-native';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {
+  getAuth,
+  FirebaseAuthTypes,
+  GoogleAuthProvider,
+} from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API_URL} from '../../utils/constants';
@@ -36,7 +40,7 @@ const LoginScreen = () => {
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = getAuth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 
@@ -50,8 +54,8 @@ const LoginScreen = () => {
       const idToken = signInResult.data?.idToken;
       if (!idToken) throw new Error('No ID token found');
 
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const userCredential = await auth().signInWithCredential(
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await getAuth().signInWithCredential(
         googleCredential,
       );
 

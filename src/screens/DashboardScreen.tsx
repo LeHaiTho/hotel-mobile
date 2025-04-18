@@ -56,7 +56,10 @@ const getIcon = (icon: IconType) => {
 };
 
 // menuData
-const menuData: {title: string; data: {name: string; icon: IconType}[]}[] = [
+const menuData: {
+  title: string;
+  data: {name: string; icon: IconType; screen?: string}[];
+}[] = [
   {
     title: 'Thông tin thanh toán',
     data: [
@@ -110,6 +113,7 @@ const menuData: {title: string; data: {name: string; icon: IconType}[]}[] = [
       {
         name: 'Đánh giá của tôi',
         icon: {name: 'chatbubble-outline', library: 'Ionicons'},
+        screen: 'Review',
       },
       {
         name: 'Câu hỏi cho chỗ nghỉ',
@@ -470,6 +474,11 @@ const DashboardScreen = () => {
                     borderTopRightRadius: isFirstItem ? 8 : 0,
                     borderBottomLeftRadius: isLastItem ? 8 : 0,
                     borderBottomRightRadius: isLastItem ? 8 : 0,
+                  }}
+                  onPress={() => {
+                    if (item.screen) {
+                      navigation.navigate(item.screen);
+                    }
                   }}>
                   <View
                     style={{

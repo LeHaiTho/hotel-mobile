@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {
   Text,
@@ -20,7 +20,7 @@ import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {COLORS} from '@styles/colors';
-
+import axios from 'axios';
 // danh sách tiện nghi
 const amenities = [
   {
@@ -68,10 +68,24 @@ const amenities = [
 ];
 
 const HotelDetailScreen = ({route}: any) => {
-  const {hotel} = route.params;
-  const remainingCount = hotel?.images?.split(',').length - 5;
+  const {hotelId, ...searchCondition} = route.params;
+  const [hotelDetail, setHotelDetail] = useState<any>(null);
+  const remainingCount = hotelDetail?.images?.split(',').length - 5;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  console.log('hotel', hotel);
+  const getHotelDetail = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/hotel-properties/hotel/${hotelId}`,
+      );
+      setHotelDetail(response.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  useEffect(() => {
+    getHotelDetail();
+  }, []);
+  console.log('hotel', hotelDetail);
   return (
     <View
       style={{
@@ -98,7 +112,7 @@ const HotelDetailScreen = ({route}: any) => {
               color: COLORS.black,
               flex: 1,
             }}>
-            {hotel?.name}
+            {hotelDetail?.name}
           </Text>
           <View
             style={{
@@ -151,14 +165,14 @@ const HotelDetailScreen = ({route}: any) => {
         <View style={styles.container}>
           {/* Hàng 1 */}
           <View style={styles.row}>
-            {hotel?.images
+            {hotelDetail?.images
               ?.split(',')
               ?.slice(0, 2)
               .map((image: any, index: number) => (
                 <Image
                   key={index}
                   source={{
-                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotel?.id}/${image}`,
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotelDetail?.id}/${image}`,
                   }}
                   style={styles.image}
                 />
@@ -167,28 +181,28 @@ const HotelDetailScreen = ({route}: any) => {
 
           {/* Hàng 2 */}
           <View style={styles.row}>
-            {hotel?.images
+            {hotelDetail?.images
               ?.split(',')
               ?.slice(2, 4)
               .map((image: any, index: number) => (
                 <Image
                   key={index}
                   source={{
-                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotel?.id}/${image}`,
+                    uri: `${API_URL}/hotel-properties/hotel/get-image/${hotelDetail?.id}/${image}`,
                   }}
                   style={styles.image}
                 />
               ))}
 
             {/* Ảnh cuối cùng có hiệu ứng đen mờ */}
-            {hotel?.images?.split(',').length > 6 ? (
+            {hotelDetail?.images?.split(',').length > 6 ? (
               <View style={styles.overlayContainer}>
                 <Image
-                  key={hotel?.images?.split(',')[4]}
+                  key={hotelDetail?.images?.split(',')[4]}
                   source={{
                     uri: `${API_URL}/hotel-properties/hotel/get-image/${
-                      hotel?.id
-                    }/${hotel?.images?.split(',')[4]}`,
+                      hotelDetail?.id
+                    }/${hotelDetail?.images?.split(',')[4]}`,
                   }}
                   style={styles.image}
                 />
@@ -200,8 +214,8 @@ const HotelDetailScreen = ({route}: any) => {
               <Image
                 source={{
                   uri: `${API_URL}/hotel-properties/hotel/get-image/${
-                    hotel?.id
-                  }/${hotel?.images?.split(',')[4]}`,
+                    hotelDetail?.id
+                  }/${hotelDetail?.images?.split(',')[4]}`,
                 }}
                 style={styles.image}
               />
@@ -282,7 +296,7 @@ const HotelDetailScreen = ({route}: any) => {
                 Nhận phòng
               </Text>
               <Text style={{fontWeight: '700', color: COLORS.primary}}>
-                {formatDate(hotel?.checkInDate, true)}
+                {formatDate(searchCondition?.checkInDate, true)}
               </Text>
             </View>
             <View style={{flex: 1}}>
@@ -294,7 +308,7 @@ const HotelDetailScreen = ({route}: any) => {
                 Trả phòng
               </Text>
               <Text style={{fontWeight: '700', color: COLORS.primary}}>
-                {formatDate(hotel?.checkOutDate, true)}
+                {formatDate(searchCondition?.checkOutDate, true)}
               </Text>
             </View>
           </View>
@@ -307,8 +321,8 @@ const HotelDetailScreen = ({route}: any) => {
               Số lượng phòng và khách
             </Text>
             <Text style={{fontWeight: '700', color: COLORS.primary}}>
-              {hotel?.capacity?.adults} người lớn, {hotel?.capacity?.children}{' '}
-              trẻ em
+              {searchCondition?.capacity?.adults} người lớn,{' '}
+              {searchCondition?.capacity?.children} trẻ em
             </Text>
           </View>
         </View>
@@ -327,11 +341,11 @@ const HotelDetailScreen = ({route}: any) => {
                 color: '#000',
               }}>
               Giá cho{' '}
-              {moment(hotel?.checkOutDate).diff(
-                moment(hotel?.checkInDate),
+              {moment(searchCondition?.checkOutDate).diff(
+                moment(searchCondition?.checkInDate),
                 'days',
               )}{' '}
-              đêm, {hotel?.capacity?.adults} người lớn
+              đêm, {searchCondition?.capacity?.adults} người lớn
             </Text>
             <Text
               style={{
@@ -339,7 +353,7 @@ const HotelDetailScreen = ({route}: any) => {
                 fontWeight: '700',
                 fontSize: 20,
               }}>
-              VND {hotel?.Rooms?.[0]?.sotien?.toLocaleString()}
+              VND {hotelDetail?.Rooms?.[0]?.sotien?.toLocaleString()}
             </Text>
             <Text
               style={{
@@ -438,8 +452,8 @@ const HotelDetailScreen = ({route}: any) => {
               style={{
                 color: COLORS.black,
               }}>
-              {hotel?.address} - {(hotel?.distance).toFixed(2)} km từ trung tâm
-              -{' '}
+              {/* {hotelDetail?.address} - {(hotelDetail?.distance).toFixed(2)} km
+              từ trung tâm -{' '} */}
               <Text
                 style={{
                   color: COLORS.green,
@@ -697,7 +711,7 @@ const HotelDetailScreen = ({route}: any) => {
                 }}>
                 <View
                   style={{
-                    backgroundColor: COLORS.primaryDarkBlack,
+                    backgroundColor: COLORS.primaryDark,
                     padding: 6,
                     borderRadius: 5,
                     borderBottomLeftRadius: 0,
@@ -1498,7 +1512,8 @@ const HotelDetailScreen = ({route}: any) => {
           ]}
           onPress={() => {
             navigation.navigate('RoomList', {
-              hotel,
+              hotelId,
+              ...searchCondition,
             });
           }}>
           <Text style={{color: COLORS.white, fontSize: 16, fontWeight: '500'}}>

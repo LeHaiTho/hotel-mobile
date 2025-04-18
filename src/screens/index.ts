@@ -14,7 +14,9 @@ import ReservationDetailScreen from './ReservationDetailScreen';
 import AdjustBookingDateScreen from './AdjustBookingDateScreen';
 import HotelSearchResultsScreen from './HotelSearchResultsScreen';
 import SearchLocationScreen from './SearchLocationScreen';
+import PaymentScreen from './PaymentScreen';
 import Map from './Map';
+import PaymentMethodScreen from './PaymentMethodScreen';
 export {
   HotelSearchResultsScreen,
   LoginScreen,
@@ -33,4 +35,6 @@ export {
   AdjustBookingDateScreen,
   SearchLocationScreen,
   Map,
+  PaymentScreen,
+  PaymentMethodScreen,
 };

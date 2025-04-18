@@ -924,3 +924,118 @@ style={{
             </View>
           </View>
         </TouchableOpacity>
+
+"@react-navigation/bottom-tabs": "^7.3.1", "@react-navigation/native-stack": "^7.2.0",
+"@react-navigation/stack": "^7.1.1","@react-navigation/native": "^7.0.14",
+"@react-navigation/elements": "^2.2.5",
+"react-native-gesture-handler": "^2.18.1", "react-native-reanimated": "^3.16.7",
+
+   <Header
+        hotelInfo={{
+          imageUrl:
+            'https://pix10.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=414x232',
+          name: 'Grant Hotel',
+          roomType: 'Phòng đơn 1 giường',
+          stayDetails: '1 đêm 2 người lớn',
+          date: 'Ngày 14/04/2025',
+        }}
+      />
+      <View
+        style={{
+          gap: 10,
+          paddingHorizontal: 16,
+          marginVertical: 16,
+        }}>
+        <RatingSelector
+          items={OVERALL_SCORES}
+          selectedScore={ratings.overall}
+          onSelect={handleOverallRating}
+        />
+        <RatingSelector
+          items={STAFF_SCORES}
+          selectedScore={ratings.staff}
+          onSelect={handleStaffRating}
+        />
+        <RatingSelector
+          items={FACILITY_SCORES}
+          selectedScore={ratings.facility}
+          onSelect={handleFacilityRating}
+          showIcon
+        />
+        <RatingSelector
+          items={FACILITY_SCORES}
+          selectedScore={ratings.facility}
+          onSelect={handleFacilityRating}
+          showIcon
+        />
+        <RatingSelector
+          items={FACILITY_SCORES}
+          selectedScore={ratings.facility}
+          onSelect={handleFacilityRating}
+          showIcon
+        />
+        <RatingSelector
+          items={CLEAN_SCORES}
+          selectedScore={ratings.clean}
+          onSelect={handleCleanRating}
+          showIcon
+        />
+        <RatingSelector
+          items={FACILITY_SCORES}
+          selectedScore={ratings.facility}
+          onSelect={handleFacilityRating}
+          showIcon
+        />
+
+        <RatingSelector
+          items={MONEY_SCORES}
+          selectedScore={ratings.money}
+          onSelect={handleMoneyRating}
+          showIcon
+        />
+        <Pressable
+          style={({pressed}) => [
+            styles.button,
+            {
+              backgroundColor: pressed
+                ? COLORS.primaryLight
+                : canProceed
+                ? COLORS.primary
+                : COLORS.gray,
+            },
+          ]}
+          onPress={handleNext}
+          disabled={!canProceed}>
+          <Text style={styles.buttonText}>Hoàn thành</Text>
+        </Pressable>
+        <Pressable
+          style={({pressed}) => [
+            styles.button,
+            {
+              backgroundColor: pressed
+                ? COLORS.primaryLight
+                : canProceed
+                ? COLORS.primary
+                : COLORS.gray,
+            },
+          ]}
+          onPress={handleNext}
+          disabled={!canProceed}>
+          <Text style={styles.buttonText}>Hoàn thành</Text>
+        </Pressable>
+        <Pressable
+          style={({pressed}) => [
+            styles.button,
+            {
+              backgroundColor: pressed
+                ? COLORS.primaryLight
+                : canProceed
+                ? COLORS.primary
+                : COLORS.gray,
+            },
+          ]}
+          onPress={handleNext}
+          disabled={!canProceed}>
+          <Text style={styles.buttonText}>Hoàn thành</Text>
+        </Pressable>
+      </View>

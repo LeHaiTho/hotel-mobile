@@ -1,15 +1,34 @@
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import IconComponent from '@components/IconComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useRoute} from '@react-navigation/native';
-
-const BookingConfirmationScreen = () => {
-  const route = useRoute<RouteProp<any>>();
+import axios from 'axios';
+import {API_URL, formatDate} from '@utils/constants';
+import authStore from '@stores/authStore';
+import moment from 'moment';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+const BookingConfirmationScreen = ({route}: {route: any}) => {
+  const {result} = route.params || {};
+  const {user} = authStore();
+  const [infoBooking, setInfoBooking] = useState<any>(null);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const getBookingId = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/booking/${result.id}`);
+      setInfoBooking(response.data.booking);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  useEffect(() => {
+    getBookingId();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -40,7 +59,7 @@ const BookingConfirmationScreen = () => {
             flexDirection: 'row',
             gap: 20,
           }}>
-          <IconComponent name="checkmark-sharp" library="Ionicons" size={20} />
+          <Ionicons name="checkmark-sharp" size={20} color="#008234" />
           <Text
             style={{
               flex: 1,
@@ -51,7 +70,7 @@ const BookingConfirmationScreen = () => {
                 color: '#000',
                 fontWeight: '700',
               }}>
-              letho1102@gmail.com
+              {user?.email}
             </Text>
           </Text>
         </View>
@@ -105,17 +124,21 @@ const BookingConfirmationScreen = () => {
               gap: 16,
             }}>
             <Image
-              source={{uri: 'https://picsum.photos/200/300'}}
+              source={{
+                uri: `${API_URL}/hotel-properties/hotel/get-image/${
+                  infoBooking?.Hotel?.id
+                }/${infoBooking?.Hotel?.images?.split(',')[0]}`,
+              }}
               style={{width: 65, height: 65, borderRadius: 10}}
             />
             <View style={{flex: 1}}>
               <Text style={{fontSize: 16, color: '#000', fontWeight: 'bold'}}>
-                The Sóng 5 Stats Apartment - Tokyo Homestay
+                {infoBooking?.Hotel?.name}
               </Text>
               <Text>
                 Tổng giá:{' '}
                 <Text style={{color: '#000', fontWeight: '500'}}>
-                  VND 615.160
+                  {Number(infoBooking?.total_price).toLocaleString('vi-VN')} VNĐ
                 </Text>
               </Text>
             </View>
@@ -130,16 +153,21 @@ const BookingConfirmationScreen = () => {
                 gap: 10,
               }}>
               <IconComponent name="calendar" library="AntDesign" size={23} />
-              <Text style={{color: '#000'}}>11/03/2025 - 13/03/2025</Text>
+              <Text style={{color: '#000'}}>
+                {formatDate(infoBooking?.checkin_date)} -{' '}
+                {formatDate(infoBooking?.checkout_date)}
+              </Text>
             </View>
-            <View
+            {/* <View
               style={{
                 flexDirection: 'row',
                 gap: 10,
               }}>
               <IconComponent name="bed-outline" library="Ionicons" size={23} />
-              <Text style={{color: '#000'}}>2 phòng ngủ</Text>
-            </View>
+              <Text style={{color: '#000'}}>
+                {infoBooking?.bookingDetails?.length} phòng ngủ
+              </Text>
+            </View> */}
           </View>
           <View
             style={{
@@ -156,7 +184,11 @@ const BookingConfirmationScreen = () => {
                 fontWeight: '500',
                 textAlign: 'center',
               }}
-              onPress={() => navigation.navigate('ReservationDetail')}>
+              onPress={() =>
+                navigation.navigate('ReservationDetail', {
+                  infoBooking,
+                })
+              }>
               Xem hoặc cập nhật chi tiết
             </Text>
           </TouchableOpacity>

@@ -1,10 +1,25 @@
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Pressable,
+} from 'react-native';
 import React from 'react';
 import IconComponent from '@components/IconComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import authStore from '@stores/authStore';
+import {formatDate} from '@utils/constants';
+import {useNavigation} from '@react-navigation/native';
+import {COLORS} from '@styles/colors';
 
-const ReservationDetailScreen = () => {
+const ReservationDetailScreen = ({route}: {route: any}) => {
+  const navigation = useNavigation<any>();
+  const {user} = authStore();
+  const {infoBooking} = route.params || {};
+  console.log(infoBooking);
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
@@ -38,7 +53,7 @@ const ReservationDetailScreen = () => {
               style={{
                 fontWeight: '700',
               }}>
-              letho11112002@gmail.com{' '}
+              {user?.email}{' '}
               <Text
                 style={{
                   color: '#0165FC',
@@ -58,7 +73,7 @@ const ReservationDetailScreen = () => {
                 fontWeight: '700',
                 lineHeight: 30,
               }}>
-              The Sóng 5 Start Apartment - Tokyo Homestay
+              {infoBooking?.Hotel?.name}
             </Text>
 
             {/* rating */}
@@ -73,24 +88,38 @@ const ReservationDetailScreen = () => {
                       fontWeight: '700',
                       color: '#000',
                     }}>
-                    12 thg 2 2025 - 26 thg 4 2025
+                    {formatDate(infoBooking?.checkin_date, true)} -{' '}
+                    {formatDate(infoBooking?.checkout_date, true)}
                   </Text>
                   <Text
                     style={{
                       color: '#000',
                     }}>
-                    Nhận phòng: từ 14:00 đến 00:00
+                    Nhận phòng: từ {infoBooking?.Hotel?.checkinfrom} đến{' '}
+                    {infoBooking?.Hotel?.checkinto}
                   </Text>
                   <Text
                     style={{
                       color: '#000',
                     }}>
-                    Trả phòng: từ 14:00 đến 00:00
+                    Trả phòng: từ {infoBooking?.Hotel?.checkoutfrom} đến{' '}
+                    {infoBooking?.Hotel?.checkoutto}
                   </Text>
 
-                  <TouchableOpacity
-                    style={{
-                      paddingVertical: 10,
+                  <Pressable
+                    style={({pressed}) => [
+                      {
+                        paddingVertical: 10,
+                        backgroundColor: pressed
+                          ? COLORS.grayLight
+                          : 'transparent',
+                        alignSelf: 'flex-start',
+                      },
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('AdjustBookingDate', {
+                        infoBooking,
+                      });
                     }}>
                     <Text
                       style={{
@@ -100,7 +129,7 @@ const ReservationDetailScreen = () => {
                       }}>
                       Thay đổi ngày
                     </Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               </View>
               <View style={{flexDirection: 'row', gap: 10}}>
@@ -120,10 +149,10 @@ const ReservationDetailScreen = () => {
                   <Text
                     style={{
                       color: '#000',
+                      flex: 1,
                     }}>
-                    26/63 Street 518, Ha Noi Highway, Quarter 5, Tan Hiep Ward,
-                    Bien Hoa City, Biên Hòa, Việt Nam{' '}
-                    <TouchableOpacity style={{}}>
+                    {infoBooking?.Hotel?.address}
+                    <TouchableOpacity style={{flex: 1}}>
                       <IconComponent
                         name="content-copy"
                         library="MaterialCommunityIcons"
@@ -259,7 +288,7 @@ const ReservationDetailScreen = () => {
                         fontWeight: '600',
                         fontSize: 16,
                       }}>
-                      Gọi +84 909 090 909
+                      Gọi {infoBooking?.Hotel?.User?.phonenumber}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -296,6 +325,9 @@ const ReservationDetailScreen = () => {
               width: '100%',
               gap: 10,
               borderRadius: 3,
+            }}
+            onPress={() => {
+              navigation.navigate('BookingManagement');
             }}>
             <Text style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
               Quản lý đặt phòng
@@ -319,7 +351,9 @@ const ReservationDetailScreen = () => {
                   />
                   <View>
                     <Text>Khách</Text>
-                    <Text>Lê Nhật An - 2 người lớn</Text>
+                    <Text>
+                      {user?.name} - {infoBooking?.total_adult} người lớn
+                    </Text>
                   </View>
                 </View>
                 <View style={{flexDirection: 'row', gap: 10}}>
@@ -408,7 +442,7 @@ const ReservationDetailScreen = () => {
               </Text>
               <Text
                 style={{color: '#058633', fontSize: 22, fontWeight: 'bold'}}>
-                VND 615.160
+                {Number(infoBooking?.total_price).toLocaleString('vi-VN')} VNĐ
               </Text>
             </View>
             <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>

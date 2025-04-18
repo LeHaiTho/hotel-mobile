@@ -9,7 +9,11 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AccountScreen from '@screens/AccountScreen';
 import {RouteProp} from '@react-navigation/native';
 import {useEffect} from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BookingHistoryScreen from '@screens/BookingHistoryScreen';
+import {COLORS} from '@styles/colors';
+import FavoritesScreen from '@screens/FavoritesScreen';
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({route}: {route: RouteProp<any, any>}) => {
@@ -50,6 +54,42 @@ const TabNavigator = ({route}: {route: RouteProp<any, any>}) => {
               <Ionicons name="notifications-outline" color="#fff" size={24} />
             </View>
           ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          tabBarIcon: ({color, size}: {color: string; size: number}) => (
+            <AntDesign name="hearto" color={color} size={size} />
+          ),
+          tabBarLabel: 'Đã lưu',
+          title: 'Đã lưu',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontSize: 18,
+            color: COLORS.white,
+            fontWeight: '600',
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="BookingHistory"
+        component={BookingHistoryScreen}
+        options={{
+          tabBarIcon: ({color, size}: {color: string; size: number}) => (
+            <Ionicons name="bag-handle-outline" color={color} size={size} />
+          ),
+          tabBarLabel: 'Đặt chỗ',
+          title: 'Chuyến đi',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontSize: 18,
+            color: COLORS.white,
+            fontWeight: '600',
+          },
         }}
       />
       <Tab.Screen

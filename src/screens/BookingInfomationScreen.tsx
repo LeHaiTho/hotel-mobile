@@ -22,8 +22,10 @@ import ModalComponent from '@components/ModalComponent';
 import {COLORS} from '@styles/colors';
 
 const BookingInfomationScreen = ({route}: any) => {
-  const {hotel} = route.params || {};
-  console.log('hotel', hotel);
+  const {hotelId, selectedRooms, searchCondition} = route.params || {};
+  console.log('hotelId', hotelId);
+  console.log('selectedRooms', selectedRooms);
+  console.log('searchCondition', searchCondition);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<boolean>(true);
@@ -56,7 +58,9 @@ const BookingInfomationScreen = ({route}: any) => {
 
     if (isValid) {
       navigation.navigate('BookingDetail', {
-        hotel,
+        hotelId,
+        selectedRooms,
+        searchCondition,
       });
     } else {
       const errorFields = Object.keys(errors).find(

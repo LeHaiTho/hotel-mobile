@@ -41,6 +41,7 @@ type initialSearchCondition = {
     adults?: number;
     children?: number;
   };
+  rooms: 1;
 };
 
 const SearchComponent = (location: SearchComponentProps) => {
@@ -58,6 +59,7 @@ const SearchComponent = (location: SearchComponentProps) => {
         adults: 2,
         children: 0,
       },
+      rooms: 1,
     });
 
   const openModal = () => setModalVisible(true);

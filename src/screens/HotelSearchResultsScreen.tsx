@@ -12,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 import IconComponent from '@components/IconComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import axios from 'axios';
 import {API_URL} from '../utils/constants';
 
@@ -20,9 +21,11 @@ import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {COLORS} from '@styles/colors';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 const HotelSearchResultsScreen = ({route}: any) => {
   const {searchCondition} = route?.params || {};
-  const [hotelResults, setHotelResults] = useState<any[]>([]);
+  const [hotelResults, setHotelResults] = useState<any>({});
   console.log('searchCondition', searchCondition);
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -37,6 +40,7 @@ const HotelSearchResultsScreen = ({route}: any) => {
         latitude: searchCondition.location.latitude,
         adults: searchCondition.capacity.adults,
         children: searchCondition.capacity.children,
+        rooms: searchCondition.rooms,
       };
 
       try {
@@ -58,20 +62,22 @@ const HotelSearchResultsScreen = ({route}: any) => {
     getHotels();
   }, []);
 
-  const handlePressHotel = (hotel: any) => {
-    const data = {
-      id: hotel?.id,
-      ...searchCondition,
-      name: hotel?.name,
-      address: hotel?.address,
-      images: hotel?.images,
-      distance: hotel?.distance,
-    };
+  const handlePressHotel = (hotelId: string) => {
+    // const data = {
+    //   id: hotel?.id,
+    //   ...searchCondition,
+    //   name: hotel?.name,
+    //   address: hotel?.address,
+    //   images: hotel?.images,
+    //   distance: hotel?.distance,
+    // };
     navigation.push('HotelDetail', {
-      hotel: data,
+      hotelId,
+      ...searchCondition,
     });
   };
 
+  console.log('hotelResults', hotelResults);
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       {/* Header + button search */}
@@ -120,9 +126,8 @@ const HotelSearchResultsScreen = ({route}: any) => {
               },
             ]}
             onPress={() => navigation.goBack()}>
-            <IconComponent
+            <MaterialCommunityIcons
               name="arrow-left"
-              library="MaterialCommunityIcons"
               size={24}
               color={COLORS.black}
             />
@@ -170,12 +175,7 @@ const HotelSearchResultsScreen = ({route}: any) => {
               },
             ]}
             onPress={() => console.log('Pressed!')}>
-            <IconComponent
-              name="filter"
-              library="MaterialCommunityIcons"
-              size={20}
-              color="#000"
-            />
+            <MaterialCommunityIcons name="filter" size={20} color="#000" />
             <Text>Sắp xếp</Text>
           </Pressable>
           <Pressable
@@ -191,12 +191,7 @@ const HotelSearchResultsScreen = ({route}: any) => {
               },
             ]}
             onPress={() => console.log('Pressed!')}>
-            <IconComponent
-              name="filter"
-              library="MaterialCommunityIcons"
-              size={20}
-              color="#000"
-            />
+            <MaterialCommunityIcons name="filter" size={20} color="#000" />
             <Text>Sắp xếp</Text>
           </Pressable>
           <Pressable
@@ -212,12 +207,7 @@ const HotelSearchResultsScreen = ({route}: any) => {
               },
             ]}
             onPress={() => console.log('Pressed!')}>
-            <IconComponent
-              name="map-outline"
-              library="Ionicons"
-              size={20}
-              color="#000"
-            />
+            <MaterialCommunityIcons name="map-marker" size={20} color="#000" />
             <Text>Sắp xếp</Text>
           </Pressable>
         </View>
@@ -227,15 +217,25 @@ const HotelSearchResultsScreen = ({route}: any) => {
         <FlatList
           contentContainerStyle={{}}
           showsVerticalScrollIndicator={false}
-          data={hotelResults}
+          data={hotelResults?.nearestHotels}
           ListHeaderComponent={() => (
-            <Text style={{color: '#000', paddingTop: 10}}>2574 chỗ nghỉ</Text>
+            <View
+              style={{
+                paddingHorizontal: 16,
+                paddingTop: 8,
+              }}>
+              {hotelResults?.total && (
+                <Text style={{color: '#000', paddingTop: 10}}>
+                  {hotelResults?.total} chỗ nghỉ
+                </Text>
+              )}
+            </View>
           )}
           renderItem={({item}) => (
             <>
               <Pressable
                 key={item?.id}
-                onPress={() => handlePressHotel(item)}
+                onPress={() => handlePressHotel(item.id)}
                 style={({pressed}) => [
                   {
                     backgroundColor: pressed ? COLORS.opacity : COLORS.white,
@@ -285,9 +285,8 @@ const HotelSearchResultsScreen = ({route}: any) => {
                       {item.name}
                     </Text>
                     <TouchableOpacity style={{paddingHorizontal: 5}}>
-                      <IconComponent
+                      <FontAwesome
                         name="heart-o"
-                        library="FontAwesome"
                         size={18}
                         color={COLORS.black}
                       />
@@ -320,9 +319,8 @@ const HotelSearchResultsScreen = ({route}: any) => {
                         color: COLORS.black,
                       }}>
                       Tốt{' '}
-                      <IconComponent
+                      <Entypo
                         name="dot-single"
-                        library="Entypo"
                         size={10}
                         color={COLORS.black}
                       />

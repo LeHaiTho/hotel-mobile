@@ -37,7 +37,7 @@ const useAuthStore = create<AuthStore>(set => ({
           Authorization: `Bearer ${token}`,
         },
       });
-      set({user: response.data.user});
+      set({user: response.data.user, token: token});
     }
   },
 }));
