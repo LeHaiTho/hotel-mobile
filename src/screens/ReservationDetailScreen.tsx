@@ -19,7 +19,7 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
   const navigation = useNavigation<any>();
   const {user} = authStore();
   const {infoBooking} = route.params || {};
-  console.log(infoBooking);
+  console.log(infoBooking?.status, infoBooking?.payment_method);
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
@@ -31,9 +31,18 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
         <View style={{gap: 10}}>
           <Text
             style={{
-              color: '#058633',
+              color:
+                infoBooking?.status === 'CANCELLED'
+                  ? '#FF0000'
+                  : infoBooking?.status === 'PENDING'
+                  ? '#058633'
+                  : '#000',
             }}>
-            Đã xác nhận
+            {infoBooking?.status === 'CANCELLED'
+              ? 'Đã hủy'
+              : infoBooking?.status === 'PENDING'
+              ? 'Đã xác nhận'
+              : 'Đang hoàn thành'}
           </Text>
           <Text
             style={{
@@ -288,7 +297,7 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
                         fontWeight: '600',
                         fontSize: 16,
                       }}>
-                      Gọi {infoBooking?.Hotel?.User?.phonenumber}
+                      Gọi +84 {infoBooking?.Hotel?.User?.phonenumber}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -327,7 +336,9 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
               borderRadius: 3,
             }}
             onPress={() => {
-              navigation.navigate('BookingManagement');
+              navigation.navigate('BookingManagement', {
+                infoBooking,
+              });
             }}>
             <Text style={{color: '#0165FC', fontSize: 16, fontWeight: '500'}}>
               Quản lý đặt phòng
@@ -373,7 +384,7 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
                         color: '#058633',
                         fontWeight: 'bold',
                       }}>
-                      Miễn phí hủy đến 18:00 11 tháng 2
+                      Miễn phí hủy
                     </Text>
                     <Text style={{color: '#000', lineHeight: 20}}>
                       Bạn có thể hủy phòng miễn phí đến 18:00 ngày nhận phòng.
@@ -398,9 +409,6 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
                     <Text style={{fontWeight: 'bold', color: '#000'}}>
                       Quyền lợi bao gồm
                     </Text>
-                    <Text style={{color: '#000'}}>Chỗ đậu xe</Text>
-                    <Text style={{color: '#000'}}>Chỗ đậu xe</Text>
-                    <Text style={{color: '#000'}}>Chỗ đậu xe</Text>
                     <Text style={{color: '#000'}}>Chỗ đậu xe</Text>
                   </View>
                 </View>
@@ -445,9 +453,37 @@ const ReservationDetailScreen = ({route}: {route: any}) => {
                 {Number(infoBooking?.total_price).toLocaleString('vi-VN')} VNĐ
               </Text>
             </View>
-            <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
-              Thanh toán được xử lý bởi chỗ nghỉ
-            </Text>
+            {infoBooking?.status === 'PENDING' &&
+              infoBooking?.payment_method === 'CASH' && (
+                <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                  Thanh toán được xử lý bởi chỗ nghỉ
+                </Text>
+              )}
+            {infoBooking?.status === 'PENDING' &&
+              infoBooking?.payment_method === 'CREDIT_CARD' &&
+              infoBooking?.is_paid === true && (
+                <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                  Đã thanh toán
+                </Text>
+              )}
+            {infoBooking?.status === 'PENDING' &&
+              infoBooking?.payment_method === 'CREDIT_CARD' &&
+              infoBooking?.is_paid === false && (
+                <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                  Chưa thanh toán
+                </Text>
+              )}
+            {infoBooking?.status === 'CONFIRMED' &&
+              infoBooking?.is_paid === true && (
+                <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                  Đã đến chỗ nghỉ
+                </Text>
+              )}
+            {infoBooking?.status === 'CANCELLED' && (
+              <Text style={{color: '#000', fontSize: 16, fontWeight: '700'}}>
+                Đã hủy
+              </Text>
+            )}
             <TouchableOpacity
               style={{
                 paddingVertical: 10,

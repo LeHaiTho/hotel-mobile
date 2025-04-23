@@ -1,9 +1,12 @@
 import 'react-native-gesture-handler';
 import TabNavigator from '@naviagtion/TabNavigator';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import useAuthStore from '@stores/authStore';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Pressable, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
@@ -29,6 +32,7 @@ import Step2ReviewScreen from '@screens/Step2ReviewScreen';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import ChangeDateConfirmScreen from '@screens/ChangeDateConfirmScreen';
 import BookingManagementScreen from '@screens/BookingManagementScreen';
+import WebviewPaymentScreen from '@screens/WebviewPaymentScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -241,6 +245,13 @@ const App = () => {
                 headerTintColor: '#fff',
                 headerTitleAlign: 'left',
                 title: 'Quản lý đặt phòng',
+              }}
+            />
+            <Stack.Screen
+              name="WebviewPayment"
+              component={WebviewPaymentScreen}
+              options={{
+                headerShown: false,
               }}
             />
           </Stack.Navigator>

@@ -12,14 +12,15 @@ import authStore from '@stores/authStore';
 import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const BookingConfirmationScreen = ({route}: {route: any}) => {
-  const {result} = route.params || {};
+  const {result, bookingId} = route.params || {};
   const {user} = authStore();
   const [infoBooking, setInfoBooking] = useState<any>(null);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
+  const id = result?.id || bookingId;
+  console.log('id', id);
   const getBookingId = async () => {
     try {
-      const response = await axios.get(`${API_URL}/booking/${result.id}`);
+      const response = await axios.get(`${API_URL}/booking/${id}`);
       setInfoBooking(response.data.booking);
     } catch (error) {
       console.log('error', error);

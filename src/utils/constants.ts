@@ -1,14 +1,16 @@
-export const API_URL = 'http://192.168.101.115:5000';
+export const API_URL = 'http://192.168.1.8:5000';
 
 export const formatDate = (
   dateString: string,
   weekDay: boolean = false,
+  showYear: boolean = false,
 ): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('vi-VN', {
     month: 'short',
     day: '2-digit',
     weekday: weekDay ? 'short' : undefined,
+    year: showYear ? 'numeric' : undefined,
   });
 };
 
@@ -61,3 +63,15 @@ export const MONEY_SCORES = [...STAFF_SCORES];
 export const COMFORTABLE_SCORES = [...STAFF_SCORES];
 export const LOCATION_SCORES = [...STAFF_SCORES];
 export const CLEAN_SCORES = [...STAFF_SCORES];
+
+// Format ngày hiện tại theo chuẩn YYYY-MM-DD
+export const getCurrentDateFormatted = () => {
+  return new Date().toLocaleDateString('en-CA').split('/').join('-');
+};
+
+// Lấy ngày mặc định cho checkout (ngày sau checkIn)
+export const getDefaultCheckOutDate = (checkInDateStr: string) => {
+  const checkIn = new Date(checkInDateStr);
+  checkIn.setDate(checkIn.getDate() + 1);
+  return checkIn.toLocaleDateString('en-CA').split('/').join('-');
+};

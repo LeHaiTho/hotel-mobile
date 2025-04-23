@@ -55,32 +55,63 @@ const BookingDetailScreen = ({route}: any) => {
       searchCondition,
     };
     console.log('payload', payload);
+    // navigation.navigate('WebviewPayment', {
+    //   payload,
+    // });
     try {
+      // const response = await axios.post(`${API_URL}/booking`, payload);
+      // console.log('response', response.data);
+      // // if (response.status === 200) {
+      // //   console.log('response', response.data);
+      // //   navigation.reset({
+      // //     index: 0,
+      // //     routes: [
+      // //       {
+      // //         name: 'BookingConfirmation',
+      // //         params: {result: response.data.result},
+      // //       },
+      // //     ],
+      // //   });
+      // // }
+      // // if (response.status === 500) {
+      // //   console.log('response', response.data);
+      // // }
+      // // // thanh toán online
+      // // if (payload.payment === 'CREDIT_CARD') {
+      // //   const response = await axios.post(`${API_URL}/payment/create`);
+      // //   console.log('response', response.data.order_url);
+      // //   navigation.navigate('WebviewPayment', {
+      // //     url: response.data.order_url,
+      // //   });
+      // // }
+
       const response = await axios.post(`${API_URL}/booking`, payload);
       if (response.status === 200) {
         console.log('response', response.data);
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'BookingConfirmation',
-              params: {result: response.data.result},
-            },
-          ],
-        });
-      }
-      if (response.status === 500) {
+
+        // Nếu là CREDIT_CARD, điều hướng đến WebviewPayment với URL thanh toán
+        if (
+          payload.payment === 'CREDIT_CARD' &&
+          response.data.result.payment_url
+        ) {
+          navigation.navigate('WebviewPayment', {
+            url: response.data.result.payment_url,
+          });
+        } else {
+          // Nếu là CASH, điều hướng đến BookingConfirmation
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'BookingConfirmation',
+                params: {result: response.data.result},
+              },
+            ],
+          });
+        }
+      } else {
         console.log('response', response.data);
       }
-      // navigation.navigate('BookingConfirmation');
-      // console.log('formData', formData);
-      // console.log('hotel', hotel);
-      // console.log('selectedRooms', selectedRooms);
-      // navigation.navigate('Payment', {
-      //   hotel,
-      //   formData,
-      //   selectedRooms,
-      // });
     } catch (error) {
       console.log('error', error);
     }
